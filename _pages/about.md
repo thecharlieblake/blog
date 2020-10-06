@@ -4,8 +4,8 @@ title: About Me
 permalink: /about/
 ---
 
-This website is powered by **[fastpages](https://github.com/fastai/fastpages)** [^1].
-
-
-
-[^1]:a blogging platform that natively supports Jupyter notebooks in addition to other formats.
+As of October 2020, I've just finished my MSc in Computer Science at Oxford
+University, and am looking to work in Data Science / Machine Learning
+Engineering. I did my undergraduate degree at the University of St Andrews. My
+interests include Deep Learning, Reinforcement Learning, Graph Neural Networks
+and Solitaire card games.
