@@ -7,7 +7,7 @@
 # https://learnxinyminutes.com/docs/yaml/
 
 title: Charlie's Blog
-description: Somewhere to post my personal projects.
+description: Somewhere to post my personal projects (mostly ML stuff) and anything else I feel like putting up here.
 github_username: thecharlieblake
 # you can comment the below line out if your repo name is not different than your baseurl
 github_repo: "blog"
