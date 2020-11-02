@@ -6,8 +6,8 @@
 # https://learn-the-web.algonquindesign.ca/topics/markdown-yaml-cheat-sheet/#yaml
 # https://learnxinyminutes.com/docs/yaml/
 
-title: Charlie's Blog
-description: Somewhere to post my personal projects (mostly ML stuff) and anything else I feel like putting up here.
+title: "Charlie Blake: Blog"
+description: Charlie Blake's personal blog
 github_username: thecharlieblake
 # you can comment the below line out if your repo name is not different than your baseurl
 github_repo: "blog"
