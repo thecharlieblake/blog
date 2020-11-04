@@ -100,9 +100,11 @@ window.onload = wrap_img;
     <div>
       <span id="krizhevsky2017imagenet">Krizhevsky, A., Sutskever, I., &amp; Hinton, G. E. (2017). Imagenet classification with deep convolutional neural networks. <i>Communications of the ACM</i>, <i>60</i>(6), 84–90.</span>
     </div>
+
     <div>
-      <a href="https://dl.acm.org/doi/abs/10.1145/3065386">https://dl.acm.org/doi/abs/10.1145/3065386</a>
+      <a href="http://www.csri.utoronto.ca/~hinton/absps/imagenet.pdf">http://www.csri.utoronto.ca/~hinton/absps/imagenet.pdf</a>
     </div>
+
     <div class="bibtex">
       
 <figure class="highlight"><pre><code class="language-rust" data-lang="rust"><span class="o">@</span><span class="n">article</span><span class="p">{</span><span class="n">krizhevsky2017imagenet</span><span class="p">,</span>
@@ -116,6 +118,20 @@ window.onload = wrap_img;
   <span class="n">publisher</span><span class="o">=</span><span class="p">{</span><span class="n">ACM</span> <span class="n">New</span> <span class="n">York</span><span class="p">,</span> <span class="n">NY</span><span class="p">,</span> <span class="n">USA</span><span class="p">}</span>
 <span class="p">}</span></code></pre></figure>
 
+    </div>
+    
+    <div class="cell border-box-sizing code_cell rendered" style="margin: -0.5rem 0 0.5rem 0 !important">
+      <details class="description">
+        <summary class="btn btn-sm" data-open="Hide PDF" data-close="Show PDF"></summary>
+        <p></p>
+        <div class="input">
+          <div class="inner_cell">
+            <div class="input_area">
+              <iframe src="http://docs.google.com/gview?url=http://www.csri.utoronto.ca/~hinton/absps/imagenet.pdf&embedded=true" style="width:100%; height:100vh;" frameborder="0"></iframe>
+            </div>
+          </div>
+        </div>
+      </details>
     </div>
 
     <p class="post-meta post-meta-title"><time class="dt-published" datetime="2020-11-02T00:00:00-06:00" itemprop="datePublished">
@@ -145,24 +161,30 @@ window.onload = wrap_img;
 
   <div class="post-content e-content" itemprop="articleBody">
     <ul class="section-nav">
-<li class="toc-entry toc-h2"><a href="#abstract">Abstract</a>
+<li class="toc-entry toc-h2"><a href="#introduction">Introduction</a></li>
+<li class="toc-entry toc-h2"><a href="#the-dataset">The Dataset</a></li>
+</ul><h2 id="introduction">
+<a class="anchor" href="#introduction" aria-hidden="true"><span class="octicon octicon-link"></span></a>Introduction</h2>
+
 <ul>
-<li class="toc-entry toc-h3"><a href="#intro">Intro</a></li>
+  <li>Convnets already introduced</li>
+  <li>Massively outperforms previous models</li>
+  <li>etc</li>
 </ul>
-</li>
-</ul><h2 id="abstract">
-<a class="anchor" href="#abstract" aria-hidden="true"><span class="octicon octicon-link"></span></a>Abstract</h2>
 
-<blockquote>
-  <p>We trained a large, deep convolutional neural network to classify the  1.2 million high-resolution images in the ImageNet LSVRC-2010 contest  into the 1000 different classes. On the test data, we achieved top-1 and top-5 error rates of 37.5% and 17.0%, respectively, which is  considerably better than the previous state-of-the-art. The neural  network, which has 60 million parameters and 650,000 neurons, consists  of five convolutional layers, some of which are followed by max-pooling  layers, and three fully connected layers with a final 1000-way softmax.  To make training faster, we used non-saturating neurons and a very  efficient GPU implementation of the convolution operation. To reduce  overfitting in the fully connected layers we employed a recently  developed regularization method called “dropout” that proved to be very  effective. We also entered a variant of this model in the ILSVRC-2012  competition and achieved a winning top-5 test error rate of 15.3%,  compared to 26.2% achieved by the second-best entry.</p>
-</blockquote>
+<h2 id="the-dataset">
+<a class="anchor" href="#the-dataset" aria-hidden="true"><span class="octicon octicon-link"></span></a>The Dataset</h2>
 
-<p>What exactly is ImageNet?</p>
+<ul>
+  <li>
+    <p>Imagenet much larger than previous datasets</p>
+  </li>
+  <li>
+    <p>…</p>
 
-<h3 id="intro">
-<a class="anchor" href="#intro" aria-hidden="true"><span class="octicon octicon-link"></span></a>Intro</h3>
-
-<p>etc. etc.</p>
+    <p>ImageNet is a dataset of over 15 million labeled high-resolution images belonging to roughly 22,000categories.  The images were collected from the web and labeled by human labelers using Ama-zon’s Mechanical Turk crowd-sourcing tool.</p>
+  </li>
+</ul>
 
     <ol class="bibliography"></ol>
   </div><a class="u-url" href="/paper-notes/krizhevsky2017imagenet.html" hidden></a>
