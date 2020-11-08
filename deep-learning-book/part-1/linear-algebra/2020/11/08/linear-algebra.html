@@ -94,7 +94,7 @@ window.onload = wrap_img;
        • <span class="read-time" title="Estimated read time">
     
     
-      1 min read
+      2 min read
     
 </span></p>
 
@@ -117,56 +117,78 @@ window.onload = wrap_img;
 
   <div class="post-content e-content" itemprop="articleBody">
     <ul class="section-nav">
-<li class="toc-entry toc-h2"><a href="#inverse-matrices">Inverse Matrices</a></li>
-<li class="toc-entry toc-h2"><a href="#linear-dependence--span">Linear Dependence &amp; Span</a></li>
+<li class="toc-entry toc-h2"><a href="#matrix-multiplication">Matrix Multiplication</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#definitions">Definitions</a></li>
+<li class="toc-entry toc-h3"><a href="#motivation">Motivation</a></li>
+<li class="toc-entry toc-h3"><a href="#solutions">Solutions</a></li>
+<li class="toc-entry toc-h3"><a href="#inverse-matrices">Inverse Matrices</a></li>
+</ul>
+</li>
 </ul><p>Link to chapter: <a href="https://www.deeplearningbook.org/contents/linear_algebra.html">1.2 Linear Algebra</a></p>
 
-<p><strong>Recall:</strong></p>
+<h2 id="matrix-multiplication">
+<a class="anchor" href="#matrix-multiplication" aria-hidden="true"><span class="octicon octicon-link"></span></a>Matrix Multiplication</h2>
+
+<h3 id="definitions">
+<a class="anchor" href="#definitions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Definitions</h3>
+
+<p><strong>span</strong> (of a matrix / set of vectors): the set of all vectors obtainable via linear combination</p>
+
+<p><strong>column / row space</strong>: span of a matrix’s columns / rows</p>
+
+<p><strong>linear independence</strong>: no vectors are in the span of any other group of vectors</p>
+
+<p><strong>Invertible matrix</strong>: square matrix with linearly independent columns</p>
+
+<h3 id="motivation">
+<a class="anchor" href="#motivation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Motivation</h3>
+
+<p>Consider the “basic” matrix-vector multiplication equation: $Ax = b$, where $A$ is a fixed matrix and $x$ is a variable vector to be found.</p>
+
+<p>For a fixed $b$, we care about the possible solutions (i.e. values of $x$): how many are there and what are they?</p>
+
+<p>Considering the case where $b$ is arbitrary (i.e. considering what is true for <em>all</em> $b$) is perhaps more interesting, and can tell us a lot about $A$ and its properties. The key question is: does the equation have a solution for all $b$?</p>
+
+<h3 id="solutions">
+<a class="anchor" href="#solutions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Solutions</h3>
+
+<p>In the case of a fixed $b$ the basic equation either has 0, 1 or infinitely many solutions. The authors provide a useful way of thinking about this:</p>
+
+<blockquote>
+  <p>To analyze how many solutions the equation has, think of the columns of $A$ as specifying diﬀerent directions we can travel in from the origin … then determine how many ways there are of reaching $b$.</p>
+</blockquote>
+
+<p>In the case of an arbitrary $b$:</p>
 
 <ul>
-  <li>Core equation: $Ax = b$    ($A$ &amp; $b$ fixed, $x$ variable / to be found)</li>
-  <li>$A$ is in $\mathbb{R}^{m \times n}$, which means $m$ up (rows) and $n$ across (columns).</li>
-</ul>
-
-<hr>
-
-<h2 id="inverse-matrices">
-<a class="anchor" href="#inverse-matrices" aria-hidden="true"><span class="octicon octicon-link"></span></a>Inverse Matrices</h2>
-
-<ul>
-  <li>For $A^{-1}$ to exist, the core equation must have exactly one solution. (Note that here we’re just considering the matrix $A$, so we’re also treating $b$ as unknown - i.e. must have one solution <em>for all possible</em> $x$ &amp; $b$.)</li>
-  <li>Computing $A^{-1}$ is often avoided as it can be numerically unstable</li>
-</ul>
-
-<h2 id="linear-dependence--span">
-<a class="anchor" href="#linear-dependence--span" aria-hidden="true"><span class="octicon octicon-link"></span></a>Linear Dependence &amp; Span</h2>
-
-<ul>
-  <li>
-    <p>The core equation either has 0, 1 or infinitely many solutions for a given $b$.</p>
-
+  <li>There is <strong>&gt;= 1</strong> solution for all $b$ iff $A$ has <strong>a set</strong> of $m$ linearly independent columns.
     <ul>
-      <li>
-        <p>The following quote gives a useful way of thinking about this:</p>
-      </li>
-      <li>
-        <blockquote>
-          <p>To analyze how many solutions the equation has, think of the columns of $A$ as specifying diﬀerent directions we can travel in from the origin … then determine how many ways there are of reaching $b$.</p>
-        </blockquote>
-      </li>
+      <li>This is due to the column space of $A$ being all of $\mathbb{R}^{m}$.</li>
+      <li>A <em>necessary</em> (but not sufficient) condition here is $n \gt m$ (at least as many columns as rows), otherwise the column space can’t span $\mathbb{R}^{m}$.</li>
     </ul>
   </li>
-  <li>
-<strong>span</strong> (of a matrix / set of vectors) = the set of all vectors obtainable via linear combination
+  <li>There is <strong>= 1</strong> solution for all $b$ iff $A$ has <strong>exactly</strong> $m$ linearly independent columns.
     <ul>
-      <li>
-<strong>column / row space</strong> = span of a matrix’s columns / rows</li>
+      <li>A <em>necessary</em> condition is therefore that m = n (i.e. $A$ is square).</li>
+      <li>Thus <strong>=1</strong> solution iff $A$ is <strong>invertible</strong>.</li>
+      <li>Note that a square matrix that is <em>not</em> invertible is called <strong>singular</strong> or <strong>degenerate</strong>.</li>
     </ul>
   </li>
-  <li>For a solution to exist (for all $b$), the column space of $A$ must be all of $\mathbb{R}^{m}$.</li>
-  <li>For the above to be the case, it is necessary (not sufficient) for $n \gt m$ (at least as many columns as rows).</li>
-  <li>Sufficiency requires <strong>linear independence</strong> = no vectors are in the span of any other group of vectors.</li>
 </ul>
+
+<p>Why is this all useful? Consider…</p>
+
+<h3 id="inverse-matrices">
+<a class="anchor" href="#inverse-matrices" aria-hidden="true"><span class="octicon octicon-link"></span></a>Inverse Matrices</h3>
+
+<p>Think of $A$ as applying a transformation to a vector or matrix.</p>
+
+<p>If the basic equation has one solution (i.e. $A$ is invertible) then this transformation can be reversed. This is often really useful!</p>
+
+<p>This reversal can be expressed as the matrix inverse $A^{-1}$.</p>
+
+<p>In practice computing $A^{-1}$ directly is often avoided as it can be numerically unstable, but this property is still very important.</p>
 
   </div><a class="u-url" href="/deep-learning-book/part-1/linear-algebra/2020/11/08/linear-algebra.html" hidden></a>
 </article>
