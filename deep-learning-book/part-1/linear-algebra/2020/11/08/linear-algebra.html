@@ -94,7 +94,7 @@ window.onload = wrap_img;
        • <span class="read-time" title="Estimated read time">
     
     
-      2 min read
+      4 min read
     
 </span></p>
 
@@ -119,25 +119,41 @@ window.onload = wrap_img;
     <ul class="section-nav">
 <li class="toc-entry toc-h2"><a href="#matrix-multiplication">Matrix Multiplication</a>
 <ul>
-<li class="toc-entry toc-h3"><a href="#definitions">Definitions</a></li>
+<li class="toc-entry toc-h3"><a href="#key-terms">Key Terms</a></li>
 <li class="toc-entry toc-h3"><a href="#motivation">Motivation</a></li>
 <li class="toc-entry toc-h3"><a href="#solutions">Solutions</a></li>
 <li class="toc-entry toc-h3"><a href="#inverse-matrices">Inverse Matrices</a></li>
 </ul>
 </li>
+<li class="toc-entry toc-h2"><a href="#norms">Norms</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#motivation-1">Motivation</a></li>
+<li class="toc-entry toc-h3"><a href="#definition">Definition</a></li>
+<li class="toc-entry toc-h3"><a href="#vector-norms">Vector Norms</a></li>
+<li class="toc-entry toc-h3"><a href="#matrix-norms">Matrix Norms</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#eigendecomposition">Eigendecomposition</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#key-terms-1">Key Terms</a></li>
+<li class="toc-entry toc-h3"><a href="#motivation-2">Motivation</a></li>
+<li class="toc-entry toc-h3"><a href="#eigenvectors--eigenvalues">Eigenvectors &amp; eigenvalues</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#singular-value-decomposition">Singular value decomposition</a></li>
 </ul><p>Link to chapter: <a href="https://www.deeplearningbook.org/contents/linear_algebra.html">1.2 Linear Algebra</a></p>
 
 <h2 id="matrix-multiplication">
 <a class="anchor" href="#matrix-multiplication" aria-hidden="true"><span class="octicon octicon-link"></span></a>Matrix Multiplication</h2>
 
-<h3 id="definitions">
-<a class="anchor" href="#definitions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Definitions</h3>
+<h3 id="key-terms">
+<a class="anchor" href="#key-terms" aria-hidden="true"><span class="octicon octicon-link"></span></a>Key Terms</h3>
 
-<p><strong>span</strong> (of a matrix / set of vectors): the set of all vectors obtainable via linear combination</p>
+<p><strong>Span</strong> (of a matrix / set of vectors): the set of all vectors obtainable via linear combination</p>
 
-<p><strong>column / row space</strong>: span of a matrix’s columns / rows</p>
+<p><strong>Column / row space</strong>: span of a matrix’s columns / rows</p>
 
-<p><strong>linear independence</strong>: no vectors are in the span of any other group of vectors</p>
+<p><strong>Linear independence</strong>: no vectors are in the span of any other group of vectors</p>
 
 <p><strong>Invertible matrix</strong>: square matrix with linearly independent columns</p>
 
@@ -153,7 +169,7 @@ window.onload = wrap_img;
 <h3 id="solutions">
 <a class="anchor" href="#solutions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Solutions</h3>
 
-<p>In the case of a fixed $b$ the basic equation either has 0, 1 or infinitely many solutions. The authors provide a useful way of thinking about this:</p>
+<p>In the case of a fixed $b$ the basic equation either has 0, 1 or $\infty$ many solutions. The authors provide a useful way of thinking about this:</p>
 
 <blockquote>
   <p>To analyze how many solutions the equation has, think of the columns of $A$ as specifying diﬀerent directions we can travel in from the origin … then determine how many ways there are of reaching $b$.</p>
@@ -189,6 +205,118 @@ window.onload = wrap_img;
 <p>This reversal can be expressed as the matrix inverse $A^{-1}$.</p>
 
 <p>In practice computing $A^{-1}$ directly is often avoided as it can be numerically unstable, but this property is still very important.</p>
+
+<h2 id="norms">
+<a class="anchor" href="#norms" aria-hidden="true"><span class="octicon octicon-link"></span></a>Norms</h2>
+
+<h3 id="motivation-1">
+<a class="anchor" href="#motivation-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Motivation</h3>
+
+<p>A norm is a function that gives us some <strong>measure of the distance from the origin</strong> to a vector or matrix.</p>
+
+<p>Clearly this is a useful concept!</p>
+
+<h3 id="definition">
+<a class="anchor" href="#definition" aria-hidden="true"><span class="octicon octicon-link"></span></a>Definition</h3>
+
+<p>A norm is any function which satisfies the following three properties (for all $\alpha, x, y$):</p>
+
+<p><strong>point-separating:</strong> $f(x) = 0 \implies x = 0$</p>
+
+<p><strong>absolutely scalable:</strong> $f(\alpha x) = |\alpha|f(x)$</p>
+
+<p><strong>triangle inequality:</strong> $f(x + y) &lt;= f(x) + f(y)$</p>
+
+<h3 id="vector-norms">
+<a class="anchor" href="#vector-norms" aria-hidden="true"><span class="octicon octicon-link"></span></a>Vector Norms</h3>
+
+<p>The $L^p$ norm of $x$, often denoted by $||x||_p$ , is defined as:</p>
+
+<span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">∣</mi><mi mathvariant="normal">∣</mi><mi>x</mi><mi mathvariant="normal">∣</mi><msub><mi mathvariant="normal">∣</mi><mi>p</mi></msub><mo>=</mo><msup><mrow><mo fence="true">(</mo><munder><mo>∑</mo><mi>i</mi></munder><mi mathvariant="normal">∣</mi><msub><mi>x</mi><mi>i</mi></msub><msup><mi mathvariant="normal">∣</mi><mi>p</mi></msup><mo fence="true">)</mo></mrow><mfrac><mn>1</mn><mi>p</mi></mfrac></msup><mspace width="1em"></mspace></mrow><annotation encoding="application/x-tex">||x||_p = \left(\sum_i |x_i|^p\right)^{\frac{1}{p}} \quad</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.036108em;vertical-align:-0.286108em;"></span><span class="mord">∣</span><span class="mord">∣</span><span class="mord mathdefault">x</span><span class="mord">∣</span><span class="mord"><span class="mord">∣</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.15139200000000003em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">p</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:3.3715889999999997em;vertical-align:-1.277669em;"></span><span class="minner"><span class="minner"><span class="mopen delimcenter" style="top:0em;"><span class="delimsizing size4">(</span></span><span class="mop op-limits"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.0500050000000003em;"><span style="top:-1.872331em;margin-left:0em;"><span class="pstrut" style="height:3.05em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">i</span></span></span><span style="top:-3.050005em;"><span class="pstrut" style="height:3.05em;"></span><span><span class="mop op-symbol large-op">∑</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.277669em;"><span></span></span></span></span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">∣</span><span class="mord"><span class="mord mathdefault">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord"><span class="mord">∣</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.714392em;"><span style="top:-3.1130000000000004em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">p</span></span></span></span></span></span></span></span><span class="mclose delimcenter" style="top:0em;"><span class="delimsizing size4">)</span></span></span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:2.09392em;"><span style="top:-4.5029em;margin-right:0.05em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mopen nulldelimiter sizing reset-size3 size6"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8443142857142858em;"><span style="top:-2.656em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">p</span></span></span></span><span style="top:-3.2255000000000003em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line mtight" style="border-bottom-width:0.049em;"></span></span><span style="top:-3.384em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mtight"><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.48288571428571425em;"><span></span></span></span></span></span><span class="mclose nulldelimiter sizing reset-size3 size6"></span></span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:1em;"></span></span></span></span></span>
+
+<p>where ($p \in \mathbb{R}, p \ge 1$) .</p>
+
+<p>The $L^1$ norm is called the <strong>Manhattan norm</strong>.</p>
+
+<p>The $L^2$ norm is called the <strong>Euclidean norm</strong>. This is the standard norm and is commonly referred to without the subscript as simply $||x||$. The squared $L^2$ norm is also used in some contexts, which is simply $x^Tx$.</p>
+
+<p>The $L^\infty$ norm is called the <strong>max norm</strong>. It is defined as $||x||_\infty = \max_i{|x_i|}$.</p>
+
+<h3 id="matrix-norms">
+<a class="anchor" href="#matrix-norms" aria-hidden="true"><span class="octicon octicon-link"></span></a>Matrix Norms</h3>
+
+<p><em>(This is a much more <a href="https://en.wikipedia.org/wiki/Matrix_norm">complex</a> field that we only touch on briefly here!)</em></p>
+
+<p>We consider two analogous matrix norms for the $L^2$ vector norm.</p>
+
+<p>In wider mathematics the <strong>spectral norm</strong> is often used. It can be useful in ML for analysing (among other things) exploding/vanishing gradients. It is defined as $A$’s largest singular value: $||A||<em>2 = \sigma</em>{\max}{(A)}$</p>
+
+<p>However, most in most ML applications it is assumed the <strong>Frobenius norm</strong> is used. This is defined as:</p>
+
+<span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">∥</mi><mi mathvariant="normal">∥</mi><mi>A</mi><mi mathvariant="normal">∥</mi><msub><mi mathvariant="normal">∥</mi><mi>F</mi></msub><mo>=</mo><msqrt><mrow><munder><mo>∑</mo><mrow><mi>i</mi><mo separator="true">,</mo><mi>j</mi></mrow></munder><msubsup><mi>A</mi><mrow><mi>i</mi><mo separator="true">,</mo><mi>j</mi></mrow><mn>2</mn></msubsup></mrow></msqrt></mrow><annotation encoding="application/x-tex">\|\|A\|\|_F = \sqrt{\sum_{i,j}{A^2_{i,j}}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">∥</span><span class="mord">∥</span><span class="mord mathdefault">A</span><span class="mord">∥</span><span class="mord"><span class="mord">∥</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.32833099999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight" style="margin-right:0.13889em;">F</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:3.04em;vertical-align:-1.5880110000000003em;"></span><span class="mord sqrt"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.4519889999999998em;"><span class="svg-align" style="top:-5em;"><span class="pstrut" style="height:5em;"></span><span class="mord" style="padding-left:1em;"><span class="mop op-limits"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.050005em;"><span style="top:-1.8723309999999997em;margin-left:0em;"><span class="pstrut" style="height:3.05em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">i</span><span class="mpunct mtight">,</span><span class="mord mathdefault mtight" style="margin-right:0.05724em;">j</span></span></span></span><span style="top:-3.0500049999999996em;"><span class="pstrut" style="height:3.05em;"></span><span><span class="mop op-symbol large-op">∑</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.413777em;"><span></span></span></span></span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord"><span class="mord mathdefault">A</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.795908em;"><span style="top:-2.4231360000000004em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">i</span><span class="mpunct mtight">,</span><span class="mord mathdefault mtight" style="margin-right:0.05724em;">j</span></span></span></span><span style="top:-3.0448000000000004em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.4129719999999999em;"><span></span></span></span></span></span></span></span></span></span><span style="top:-3.4119889999999997em;"><span class="pstrut" style="height:5em;"></span><span class="hide-tail" style="min-width:1.02em;height:3.08em;"><svg width="400em" height="3.08em" viewbox="0 0 400000 3240" preserveaspectratio="xMinYMin slice"><path d="M473,2793
+c339.3,-1799.3,509.3,-2700,510,-2702 l0 -0
+c3.3,-7.3,9.3,-11,18,-11 H400000v40H1017.7
+s-90.5,478,-276.2,1466c-185.7,988,-279.5,1483,-281.5,1485c-2,6,-10,9,-24,9
+c-8,0,-12,-0.7,-12,-2c0,-1.3,-5.3,-32,-16,-92c-50.7,-293.3,-119.7,-693.3,-207,-1200
+c0,-1.3,-5.3,8.7,-16,30c-10.7,21.3,-21.3,42.7,-32,64s-16,33,-16,33s-26,-26,-26,-26
+s76,-153,76,-153s77,-151,77,-151c0.7,0.7,35.7,202,105,604c67.3,400.7,102,602.7,104,
+606zM1001 80h400000v40H1017.7z"></path></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.5880110000000003em;"><span></span></span></span></span></span></span></span></span></span>
+
+<h2 id="eigendecomposition">
+<a class="anchor" href="#eigendecomposition" aria-hidden="true"><span class="octicon octicon-link"></span></a>Eigendecomposition</h2>
+
+<h3 id="key-terms-1">
+<a class="anchor" href="#key-terms-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Key Terms</h3>
+
+<p><strong>Unit vector</strong>: the $L^2$ norm = 1</p>
+
+<p><strong>Orthogonal vectors</strong>: $x^Ty = 0$</p>
+
+<p><strong>Orthonormal vectors</strong>: orthogonal unit vectors</p>
+
+<p><strong>Orthogonal matrix</strong>: rows &amp; columns are mutually <em>orthonormal</em></p>
+
+<h3 id="motivation-2">
+<a class="anchor" href="#motivation-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Motivation</h3>
+
+<p>Decomposing matrices can help us learn about a matrix by breaking it down into its constituent parts. This can reveal useful properties about the matrix.</p>
+
+<p>Eigendecomposition decomposes a matrix into <strong>eigenvectors</strong> and <strong>eigenvalues</strong>.</p>
+
+<p>These tell us something about the directions and sizes of the transformation created when multiplying by the matrix.</p>
+
+<h3 id="eigenvectors--eigenvalues">
+<a class="anchor" href="#eigenvectors--eigenvalues" aria-hidden="true"><span class="octicon octicon-link"></span></a>Eigenvectors &amp; eigenvalues</h3>
+
+<p>Vector $v$ and scalar $\lambda$ are a eigenvector-eigenvalue pair for <em>square</em> matrix $A$ iff:</p>
+
+<ol>
+  <li>$v \neq \mathbf{0}$</li>
+  <li>$Av = \lambda v$</li>
+</ol>
+
+<p><em>(Strictly speaking, here $v$ is a right eigenvector. A left eigenvector is such that $v^TA = \lambda v^T$. We care primarily about right eigenvectors.)</em></p>
+
+<p>If $v$ is an eigenvector it follows that any rescaled version of $v$ is also an eigenvector with the same eigenvalue. We typically use a scale such that we have a unit eigenvector.</p>
+
+<p>If $A$ has $n$ independent eigenvectors we can create a matrix of them, $V$, such that $AV = V diag(\lambda)$.</p>
+
+<p>The eigendecomposition of $A$ is then defined as: $A = V diag(\lambda) V^{-1}$.</p>
+
+<p>We are only guaranteed an eigendecomposition if $A$ is symmetric (and real-valued). In this case it is often denoted:</p>
+
+<span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>A</mi><mo>=</mo><mi>Q</mi><mi mathvariant="normal">Λ</mi><msup><mi>Q</mi><mi>T</mi></msup></mrow><annotation encoding="application/x-tex">A = Q \Lambda Q^T</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault">A</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1.0857709999999998em;vertical-align:-0.19444em;"></span><span class="mord mathdefault">Q</span><span class="mord">Λ</span><span class="mord"><span class="mord mathdefault">Q</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8913309999999999em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight" style="margin-right:0.13889em;">T</span></span></span></span></span></span></span></span></span></span></span></span>
+
+<p>Here the decomposition is guaranteed to be real-valued and $Q$ is orthogonal.</p>
+
+<p>The decomposition may not be unique if two (independent) eigenvectors have the same eigenvalues.</p>
+
+<p>Zero-valued eigenvalues exist iff $A$ is singular.</p>
+
+<h2 id="singular-value-decomposition">
+<a class="anchor" href="#singular-value-decomposition" aria-hidden="true"><span class="octicon octicon-link"></span></a>Singular value decomposition</h2>
+
+<p>…</p>
 
   </div><a class="u-url" href="/deep-learning-book/part-1/linear-algebra/2020/11/08/linear-algebra.html" hidden></a>
 </article>
