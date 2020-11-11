@@ -144,7 +144,7 @@ Vector $v$ and scalar $\lambda$ are a eigenvector-eigenvalue pair for *square* m
 
 If $v$ is an eigenvector it follows that any rescaled version of $v$ is also an eigenvector with the same eigenvalue. We typically use a scale such that we have a unit eigenvector.
 
-If $A$ has $n$ independent eigenvectors we can create a matrix of them, $V$, such that $AV = V diag(\lambda)$.
+If $A$ has $n$ independent eigenvectors we can combine them into the **columns** of a matrix, $V$, such that $AV = V diag(\lambda)$.
 
 The eigendecomposition of $A$ is then defined as: $A = V diag(\lambda) V^{-1}$.
 
@@ -192,8 +192,8 @@ $$
 
 where:
 
-- $U$ is an orthogonal $m \times m$ matrix of **left-singular** vectors
-- $V$ is an orthogonal $n \times n$ matrix of **right-singular** vectors
+- $U$ is an orthogonal $m \times m$ matrix of **left-singular** vectors (columns)
+- $V$ is an orthogonal $n \times n$ matrix of **right-singular** vectors (columns)
 - $D$ is a diagonal $m \times n$ matrix of **singular values** (not necessarily square)
 
 These matrices are calculated as follows:
