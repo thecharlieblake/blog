@@ -195,9 +195,9 @@ window.onload = wrap_img;
 </ul><h2 id="introduction">
 <a class="anchor" href="#introduction" aria-hidden="true"><span class="octicon octicon-link"></span></a>Introduction</h2>
 
-<p>The paper focuses on the domain of object recognition.</p>
+<p>The paper focuses on the domain of visual object recognition. Interpreting high-dimensional pixel data is a difficult task, which requires learning complex relationships.</p>
 
-<p>This is a very complex task. The authors outline two key components for dealing with this:</p>
+<p>The authors outline two key components for addressing this:</p>
 
 <ol>
   <li>Large datasets</li>
@@ -221,10 +221,10 @@ window.onload = wrap_img;
 <p>One key point which the authors perhaps don’t stress enough is as follows:</p>
 
 <blockquote>
-  <p>l of our experiments suggest that our resultscan be improved simply by waiting for faster GPUs and bigger datasets to become available.</p>
+  <p>All of our experiments suggest that our results can be improved simply by waiting for faster GPUs and bigger datasets to become available.</p>
 </blockquote>
 
-<p>This observation would seem to be key to the enduring success of such methods.</p>
+<p>This observation appears key to the enduring success of such methods.</p>
 
 <h2 id="the-dataset">
 <a class="anchor" href="#the-dataset" aria-hidden="true"><span class="octicon octicon-link"></span></a>The Dataset</h2>
@@ -325,7 +325,7 @@ window.onload = wrap_img;
 
 <p>On ILSVRC-2010 the previous best result was (45.7%, 25.7%). The CNN model achieves <strong>(37.5%, 17.0%)</strong>.</p>
 
-<p>On ILSVRC-2012 the second-best result was (_, 26.2%). The CNN model achieves <strong>(__, 18.2%) **, and using an ensemble of 7 CNNs where 2 are pre-trained on ILSVRC-2011 achieves **(__, 15.3%)</strong>.</p>
+<p>On ILSVRC-2012 the second-best result was (. , 26.2%). The CNN model achieves <strong>(. , 18.2%) **, and using an ensemble of 7 CNNs where 2 are pre-trained on ILSVRC-2011 achieves **(. , 15.3%)</strong>.</p>
 
 <h2 id="discussion">
 <a class="anchor" href="#discussion" aria-hidden="true"><span class="octicon octicon-link"></span></a>Discussion</h2>
@@ -365,9 +365,9 @@ window.onload = wrap_img;
 <h3 id="the-paper-itself">
 <a class="anchor" href="#the-paper-itself" aria-hidden="true"><span class="octicon octicon-link"></span></a>The Paper Itself</h3>
 
-<p>The paper is well-structured, to-the-point and clear. There is nothing overly complex here.</p>
+<p>The paper is well-structured, to-the-point and clear.</p>
 
-<p>One criticism is with a lack of discussion of the methods they are comparing against though, which would have helped contextualise/justify their approach. I also would like more assurance that they are making a fair comparison with other methods. I’m not certain, for instance how the methods they compare against would fare if given an equal amount of compute (although given the success of CNNs here and subsequently, I would almost certainly expect them to do better under such conditions).</p>
+<p>One criticism I have is with a lack of discussion of the methods they are comparing against though, which would have helped contextualise/justify their approach. I also would like more assurance that they are making a fair comparison with other methods. I’m not certain, for instance how the methods they compare against would fare if given an equal amount of compute (although given the success of CNNs here and subsequently, I would almost certainly expect them to do better under such conditions).</p>
 
 <p>I would also have loved to see a proper table of ablations in an appendix (plus details of hyperparameter search). They do have some great ablation details in the body of the paper, but it would be good to see them all done thoroughly in one place.</p>
 
