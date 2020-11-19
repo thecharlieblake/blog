@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Deep Learning Book Notes: Deep Feedforward Networks | Charlie Blake: Blog</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Deep Learning Book Notes: Deep Feedforward Networks" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Notes for Chapter 2.6 in the book Deep Learning (Goodfellow et al.)." />
+<meta property="og:description" content="Notes for Chapter 2.6 in the book Deep Learning (Goodfellow et al.)." />
+<link rel="canonical" href="https://thecharlieblake.co.uk/deep-learning-book/part-2/feedforward/neural-network/2020/11/19/feedforward.html" />
+<meta property="og:url" content="https://thecharlieblake.co.uk/deep-learning-book/part-2/feedforward/neural-network/2020/11/19/feedforward.html" />
+<meta property="og:site_name" content="Charlie Blake: Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-11-19T00:00:00-06:00" />
+<script type="application/ld+json">
+{"url":"https://thecharlieblake.co.uk/deep-learning-book/part-2/feedforward/neural-network/2020/11/19/feedforward.html","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://thecharlieblake.co.uk/deep-learning-book/part-2/feedforward/neural-network/2020/11/19/feedforward.html"},"headline":"Deep Learning Book Notes: Deep Feedforward Networks","dateModified":"2020-11-19T00:00:00-06:00","datePublished":"2020-11-19T00:00:00-06:00","description":"Notes for Chapter 2.6 in the book Deep Learning (Goodfellow et al.).","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://thecharlieblake.co.uk/feed.xml" title="Charlie Blake: Blog" /><link rel="shortcut icon" type="image/png" href="/images/favicon.png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Charlie Blake: Blog</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About Me</a><a class="page-link" href="/search/">Search</a><a class="page-link" href="/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Deep Learning Book Notes: Deep Feedforward Networks</h1><p class="page-description">Notes for Chapter 2.6 in the book Deep Learning (Goodfellow et al.).</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2020-11-19T00:00:00-06:00" itemprop="datePublished">
+        Nov 19, 2020
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      3 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/categories/#deep-learning-book">deep-learning-book</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#part-2">part-2</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#feedforward">feedforward</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#neural-network">neural-network</a>
+        
+      
+      </p>
+    
+
+    </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul class="section-nav">
+<li class="toc-entry toc-h2"><a href="#gradient-based-learning">Gradient-Based Learning</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#cost-functions">Cost Functions</a></li>
+</ul>
+</li>
+</ul><p>Link to chapter: <a href="https://www.deeplearningbook.org/contents/mlp.html">2.6 Deep Feedforward Networks</a></p>
+
+<p><em>(Note: I’ve only noted down chunks that were interesting / I haven’t already internalised. Fairly large chunks from the book are therefore not covered)</em></p>
+
+<h2 id="gradient-based-learning">
+<a class="anchor" href="#gradient-based-learning" aria-hidden="true"><span class="octicon octicon-link"></span></a>Gradient-Based Learning</h2>
+
+<p>Note that “stochastic gradient descent applied to <em>nonconvex</em> loss functions has no […] convergence guarantee and is sensitive to the values of the initial parameters”. In other words, SGD-based methods simply find strong local optima, which depend on where we start looking.</p>
+
+<h3 id="cost-functions">
+<a class="anchor" href="#cost-functions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Cost Functions</h3>
+
+<p>A cost function is what connects a model to a performance measure.</p>
+
+<p>A cost function is can be thought of as a <strong>functional</strong>, which is a mapping from functions (in this case, input models) to real numbers. It takes in a model, and outputs some performance measure, typically with the help of some <em>fixed</em> training data.</p>
+
+<p>Why is this useful? Well, first assume that there is some <em>desirable property</em> we wish our model to have. If we can derive a cost functional that has a minimum at the point where the model (i.e. input function) satisfies this property, then we can optimise to find this model (i.e. by changing its parameters).</p>
+
+<p>This leaves us with two questions:</p>
+
+<ol>
+  <li>What is this desirable property?</li>
+  <li>How do we derive a cost function that has a minimum at this point?</li>
+</ol>
+
+<p>One common answer to the first of these questions is: <strong>the maximum likelihood principle</strong>. This simply states that we desire the model that maximises the probability of some set of test data occurring.</p>
+
+<p>If we have i.i.d. data, the likelihood of the data (in the SL setting) $p_{model}(\textbf{y}<em>0, \dots \textbf{y}_m \mid \textbf{x}_0, \dots \textbf{x}_m ; \theta)$ is equal to  $\Pi^{m}</em>{i=1}p_{model}(\textbf{y}_i \mid \textbf{x}_i ; \theta)$. We want the minimum so we negate, and then to turn the multiplication into addition (to make life easier) we move into log-space. This gives us the most popular loss function, the <strong>negative log-likelihood</strong>:
+<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>J</mi><mo stretchy="false">(</mo><mi>θ</mi><mo stretchy="false">)</mo><mo>=</mo><msub><mi mathvariant="double-struck">E</mi><mrow><mi mathvariant="bold">x</mi><mo separator="true">,</mo><mi mathvariant="bold">y</mi><mo>∼</mo><msub><mi>p</mi><mrow><mi>d</mi><mi>a</mi><mi>t</mi><mi>a</mi></mrow></msub></mrow></msub><mrow><mo fence="true">[</mo><mo>−</mo><mi>log</mi><mo>⁡</mo><msub><mi>p</mi><mrow><mi>m</mi><mi>o</mi><mi>d</mi><mi>e</mi><mi>l</mi></mrow></msub><mo stretchy="false">(</mo><mi mathvariant="bold">y</mi><mo>∣</mo><mtext mathvariant="bold">x</mtext><mo separator="true">;</mo><mi>θ</mi><mo stretchy="false">)</mo><mo fence="true">]</mo></mrow></mrow><annotation encoding="application/x-tex">J(\theta) = \mathbb{E}_{\mathbf{x}, \mathbf{y} \sim p_{data}}\left[-\log p_{model}( \mathbf{y} \mid \textbf{x} ; \theta)\right]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.09618em;">J</span><span class="mopen">(</span><span class="mord mathdefault" style="margin-right:0.02778em;">θ</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1.036108em;vertical-align:-0.286108em;"></span><span class="mord"><span class="mord"><span class="mord mathbb">E</span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.16110799999999997em;"><span style="top:-2.5500000000000003em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathbf mtight">x</span></span><span class="mpunct mtight">,</span><span class="mord mtight"><span class="mord mathbf mtight" style="margin-right:0.01597em;">y</span></span><span class="mrel mtight">∼</span><span class="mord mtight"><span class="mord mathdefault mtight">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3448em;"><span style="top:-2.3487714285714287em;margin-left:0em;margin-right:0.07142857142857144em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">d</span><span class="mord mathdefault mtight">a</span><span class="mord mathdefault mtight">t</span><span class="mord mathdefault mtight">a</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15122857142857138em;"><span></span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;">[</span><span class="mord">−</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mop">lo<span style="margin-right:0.01389em;">g</span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathdefault">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.33610799999999996em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">m</span><span class="mord mathdefault mtight">o</span><span class="mord mathdefault mtight">d</span><span class="mord mathdefault mtight">e</span><span class="mord mathdefault mtight" style="margin-right:0.01968em;">l</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord"><span class="mord mathbf" style="margin-right:0.01597em;">y</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">∣</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mord text"><span class="mord textbf">x</span></span><span class="mpunct">;</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">θ</span><span class="mclose">)</span><span class="mclose delimcenter" style="top:0em;">]</span></span></span></span></span>
+Given that the $\theta$ parameters of the model are fixed while the cost function is evaluated, this formulation is exactly the same as something we have seen before: the <strong>cross-entropy</strong>. This leads us to a neat conclusion:</p>
+
+<p><em>Minimising the NLL is the same as minimising the cross-entropy of the model’s distribution relative to the data distribution</em>.</p>
+
+<p>Neat!</p>
+
+<p>Note that this can also be framed as minimising the KL divergence between the two distributions, as the KL is simply $H(p_{data}, p_{model}) - H(p_{data})$ and the entropy term here is irrelevant for the optimisation.</p>
+
+<p>In a sense, this gives us three inter-related ways of motivating minimising the NLL:</p>
+
+<ol>
+  <li>It satisfies the maximum likelihood principle.</li>
+  <li>It minimises the cross-entropy of the model’s distribution relative to the data distribution.</li>
+  <li>It minimises the KL divergence from the model’s distribution to the data distribution.</li>
+</ol>
+
+<p>As we have seen in Chapter 1.3, the best model from the space of <em>functions</em> for minimising the NLL is the Empirical Distribution, which will not generalise to new data at all.</p>
+
+<p>However, we optimise in <em>parameter</em> space, relative to some hand-picked likelihood model. The problem of model selection then becomes one of finding a model such that the parameters that minimise the NLL do lead to strong generalisation. Accounting for stochastic noise in our model can help to address this.</p>
+
+  </div><a class="u-url" href="/deep-learning-book/part-2/feedforward/neural-network/2020/11/19/feedforward.html" hidden></a>
+</article>
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>Charlie Blake&#39;s personal blog</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/thecharlieblake" title="thecharlieblake"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/thecharlieblake" title="thecharlieblake"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
