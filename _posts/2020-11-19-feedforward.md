@@ -16,24 +16,36 @@ Note that "stochastic gradient descent applied to *nonconvex* loss functions has
 
 ### Cost Functions
 
-A cost function is what connects a model to a performance measure.
+*(Note: much of this section is also based on the previous chapter in the book)*
 
-A cost function is can be thought of as a **functional**, which is a mapping from functions (in this case, input models) to real numbers. It takes in a model, and outputs some performance measure, typically with the help of some *fixed* training data.
+A cost function enables us to calculate a scalar performance metric evaluating our model's predictions over a dataset. We aim to optimise with respect to this metric, so we want to choose a cost function with a minimum point that represents the "best" performance for the model.
 
-Why is this useful? Well, first assume that there is some *desirable property* we wish our model to have. If we can derive a cost functional that has a minimum at the point where the model (i.e. input function) satisfies this property, then we can optimise to find this model (i.e. by changing its parameters).
+We typically think of the model's functional form as fixed, but parameterised by some learned $\theta$. This reduces our optimisation problem to finding the right solution in parameter space, rather than function space. Thus we can frame the cost function as an evaluation of our model's parameters.
 
-This leaves us with two questions:
+We can think of our model as either outputting a single prediction, or as defining a conditional probability distribution: $p_{model}( \mathbf{y} \mid \textbf{x} ; \theta)$. We will consider the latter case first. We desire a cost function with a minimum at the point where our model is "best", but how do we define this?
 
-1. What is this desirable property?
-2. How do we derive a cost function that has a minimum at this point?
+One common answer to this question is the **maximum likelihood principle**. This simply states that given a dataset (inputs and labels), the "best" model is the one that allocates the highest probability to the correct labels given the inputs.
 
-One common answer to the first of these questions is: **the maximum likelihood principle**. This simply states that we desire the model that maximises the probability of some set of test data occurring.
+The following steps show how we can describe this criterion using a cost function, denoted $J(\theta)$:
 
-If we have i.i.d. data, the likelihood of the data (in the SL setting) $p_{model}(\textbf{y}_0, \dots \textbf{y}_m \mid \textbf{x}_0, \dots \textbf{x}_m ; \theta)$ is equal to  $\Pi^{m}_{i=1}p_{model}(\textbf{y}_i \mid \textbf{x}_i ; \theta)$. We want the minimum so we negate, and then to turn the multiplication into addition (to make life easier) we move into log-space. This gives us the most popular loss function, the **negative log-likelihood**:
+1. We define the likelihood of the data as:  $p_{model}(\textbf{y}_0, \dots \textbf{y}_m \mid \textbf{x}_0, \dots \textbf{x}_m ; \theta)$.
+2. Assuming the data is i.i.d., we can factorise the joint distribution as:  $\Pi^{m}_{i=1}p_{model}(\textbf{y}_i \mid \textbf{x}_i ; \theta)$.
+3. Our criterion states that the "best" set of parameters should give the most probability to the training data. In mathematical terms, this means:  $\theta_{best} = \arg \max_{\theta}{\Pi^{m}_{i=1}p_{model}(\textbf{y}_i \mid \textbf{x}_i ; \theta)}$.
+4. As specified by our definition of the cost function, we need  $\arg \min_\theta J(\theta) = \theta_{best}$.
+5. One form for $J(\theta)$ which satisfies this is:  $J(\theta) = \Pi^{m}_{i=1}{-p_{model}(\textbf{y}_i \mid \textbf{x}_i ; \theta)}$.
+6. Long chains of multiplication can lead to problems such as numerical instability. Moving into log space solves this problem without changing $\theta_{best}$. This gives us our final form for $J(\theta)$, the **negative log-likelihood**:
+
+$$
+J(\theta) = \sum^{m}_{i=1}{-\log p_{model}(\textbf{y}_i \mid \textbf{x}_i ; \theta)}
+$$
+
+We now have a criterion for our model's parameters! This gives us something to tune the parameters with respect to, *regardless of the choice of model*.
+
+There is another observation we can make to further justify our use of maximum likelihood. We can re-frame our formula for the NLL as an expectation in the following way:
 $$
 J(\theta) = \mathbb{E}_{\mathbf{x}, \mathbf{y} \sim p_{data}}\left[-\log p_{model}( \mathbf{y} \mid \textbf{x} ; \theta)\right]
 $$
-Given that the $\theta$ parameters of the model are fixed while the cost function is evaluated, this formulation is exactly the same as something we have seen before: the **cross-entropy**. This leads us to a neat conclusion: 
+This formulation is exactly the same as something we have seen before: the **cross-entropy**. This leads us to a neat conclusion: 
 
 *Minimising the NLL is the same as minimising the cross-entropy of the model's distribution relative to the data distribution*.
 
@@ -41,12 +53,19 @@ Neat!
 
 Note that this can also be framed as minimising the KL divergence between the two distributions, as the KL is simply $H(p_{data}, p_{model}) - H(p_{data})$ and the entropy term here is irrelevant for the optimisation.
 
-In a sense, this gives us three inter-related ways of motivating minimising the NLL:
+This gives us three inter-related ways of motivating our decision to minimise the NLL:
 
 1. It satisfies the maximum likelihood principle.
 2. It minimises the cross-entropy of the model's distribution relative to the data distribution.
 3. It minimises the KL divergence from the model's distribution to the data distribution.
 
-As we have seen in Chapter 1.3, the best model from the space of *functions* for minimising the NLL is the Empirical Distribution, which will not generalise to new data at all.
+### A Note on the Sigmoid Function
 
-However, we optimise in *parameter* space, relative to some hand-picked likelihood model. The problem of model selection then becomes one of finding a model such that the parameters that minimise the NLL do lead to strong generalisation. Accounting for stochastic noise in our model can help to address this.
+Often in ML the sigmoid unit is used when predicting the output of a binary variable (i.e. a Bernoulli distribution). The sigmoid is defined as follows:
+$$
+\sigma(x) = \frac{e^x}{e^x + 1} = \frac{1}{1 + e^{-x}}
+$$
+When this is used to minimise cross-entropy this becomes the *softplus* function:???
+$$
+J(\theta) = \frac{1}{m}\sum_{i=1}^m-\log P(y_i|x_i)
+$$
