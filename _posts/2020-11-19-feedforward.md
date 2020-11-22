@@ -71,17 +71,23 @@ The sigmoid function is defined as follows:
 $$
 \sigma(z) = \frac{e^z}{e^z + 1} = \frac{1}{1 + e^{-z}}
 $$
-We can use this to model $P(y = 1 | x) = \theta$ (recalling that $z$ is a function of $x$), and then in accordance with the laws of probability we can take $P(y = 0 | x) = 1 - P(y = 1 | x)$ to give us our full distribution over labels.
+We can use this to model $P(y = 1 \mid x) = \theta$ (recalling that $z$ is a function of $x$), and then in accordance with the laws of probability we can take $P(y = 0 \mid x) = 1 - P(y = 1 \mid x)$ to give us our full distribution over labels.
 
-Two interesting properties of this function are:
+Three interesting properties of this function are:
+
+
 $$
 1 - \sigma(z) = \sigma(-z) \\
 \sigma^\prime(z) = \sigma(z)(1-\sigma(z)) = \sigma(z)\sigma(-z)\\
 \int\sigma(z)dz = \log(1+e^z) = \zeta(z) \quad \text{(softplus)}
 $$
+
+
 But why use this particular bounding function over any other form? Well, it turns out that if we assume a very simple linear model for the probability, this is what results.
 
-We begin by modelling the unnormalised log probability, $\log\tilde{P}(y \mid x)$. This is a good place to start, as whereas  $P(y \mid x) \in [0, 1]$,   $\log\tilde{P}(y \mid x) \in \mathbb{R}$.  The most simple model for our final layer is the linear model[^1]:
+We begin by modelling the unnormalised log probability, $\log\tilde{P}(y \mid x)$. This is a good place to start, as whereas  $P(y \mid x) \in [0, 1]$,   $\log\tilde{P}(y \mid x) \in \mathbb{R}$.  The most simple model for our final layer is the linear model[^2]:
+
+
 $$
 \log\tilde{P}(y \mid x) = yz = \begin{cases}
 z, & y=1\\
@@ -89,9 +95,12 @@ z, & y=1\\
 \end{cases}
 $$
 
+
 [^2]: One useful feature of this form is that one case is constant. We will see when we normalise how this translates into a single output controlling the probabilities of both cases, as required for a Bernoulli distribution.
 
 To convert this into an expression for the probability distribution we take the following steps:
+
+
 $$
 \tilde{P}(y \mid x) = e^{yz} = \begin{cases}
 e^z, & y=1\\
@@ -102,16 +111,22 @@ P(y \mid x) = \begin{cases}
 \frac{1}{1 + e^{z}} = \sigma(-z) = 1-\sigma(z), & y=0
 \end{cases}
 $$
+
+
 Thus we have shown that the sigmoid activation function is the natural consequence of a linear model for our log probabilities.
 
 We can use this form with the NLL defined in the previous section:
+
+
 $$
 J(\theta) = -\log P(y \mid x) = \begin{cases}
 \log(1 + e^{-z}) = \zeta(-z), & y=1\\
 \log(1 + e^{z}) = \zeta(z), & y=0
 \end{cases}
 $$
-Visualising this function, its curve looks like a smooth version of the ReLU function. To minimise these two cases (our objective for the cost function) we must therefore move to the positive and negative extremes for our respective cases.
+
+
+Visualising this function, its curve looks like a smooth version of the ReLU function. To minimise these two cases (which is our objective for the cost function) we must therefore move to the positive and negative extremes for our respective cases.
 
 Thus the consequence of using the sigmoid activation in combination with maximum likelihood is that our learning objective for the logits $z$ is to make the predictions for our 1 labels as positive as possible, and for our 0 labels as negative as possible.
 
@@ -121,15 +136,19 @@ One practical consideration we also shouldn't overlook here is how amenable this
 
 What we really care about here is the degree to which the size of the gradient shrinks when the outputs of the layer are towards the extremes. We call this phenomenon *saturation*, and it leads to very slow learning in cases where we have predictions that are incorrect by a large amount[^3].
 
-[^3]: sigmoid activation combined with MSE has *exactly* this problem. See how the left extreme of [this graph](https://www.wolframalpha.com/input/?i=d%2Fdx+%28sigmoid%28x%29-1%29%5E2) (the derivative of the MSE) tends to 0, whereas in our case it tends to -1.
+[^3]: Sigmoid activation combined with MSE has *exactly* this problem. See how the left extreme of [this graph](https://www.wolframalpha.com/input/?i=d%2Fdx+%28sigmoid%28x%29-1%29%5E2) (the derivative of the MSE) tends to 0, whereas in our case it tends to -1.
 
 The derivative of the cost function with respect to $z$ are simply:
+
+
 $$
 \frac{d}{dz} J(\theta) = \begin{cases}
 -\sigma(-z) = \sigma(z)-1, & y=1\\
 \sigma(z), & y=0
 \end{cases}
 $$
+
+
 In the case of a very wrong input for a positive label ($y=1, z \to -\infty$), we have $\sigma(z) = 0$  so the derivative tends to $-1$; for a very wrong negative label the derivative tends to $1$.
 
 This is exactly the behaviour we want: large gradients for very wrong predictions (although not too large). Conversely, the gradient for good predictions tends to zero in both cases. Learning will only slow down for this layer when we get close to the right answer!
