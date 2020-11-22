@@ -59,13 +59,80 @@ This gives us three inter-related ways of motivating our decision to minimise th
 2. It minimises the cross-entropy of the model's distribution relative to the data distribution.
 3. It minimises the KL divergence from the model's distribution to the data distribution.
 
-### A Note on the Sigmoid Function
+### Sigmoid Units for Bernoulli Output Distributions
 
-Often in ML the sigmoid unit is used when predicting the output of a binary variable (i.e. a Bernoulli distribution). The sigmoid is defined as follows:
+For tasks where the prediction is of a binary label, we can use our model to define a Bernoulli distribution over $y$ conditioned on $x$. The task of our network is to learn a conditional value for the distribution's (single) parameter $\theta$, which we can then use for prediction.
+
+We have a particular requirement for this parameter:  $\theta \in [0, 1]$. To satisfy this, we must add a layer to the end of our network to bound the output $z$ (note: this value is sometimes called a **logit**). One common choice is the sigmoid function[^1].
+
+[^1]: Wikipedia defines the sigmoid function as a general family of S-shaped curves, and refers to this particular function as the *logistic function*.
+
+The sigmoid function is defined as follows:
 $$
-\sigma(x) = \frac{e^x}{e^x + 1} = \frac{1}{1 + e^{-x}}
+\sigma(z) = \frac{e^z}{e^z + 1} = \frac{1}{1 + e^{-z}}
 $$
-When this is used to minimise cross-entropy this becomes the *softplus* function:???
+We can use this to model $P(y = 1 | x) = \theta$ (recalling that $z$ is a function of $x$), and then in accordance with the laws of probability we can take $P(y = 0 | x) = 1 - P(y = 1 | x)$ to give us our full distribution over labels.
+
+Two interesting properties of this function are:
 $$
-J(\theta) = \frac{1}{m}\sum_{i=1}^m-\log P(y_i|x_i)
+1 - \sigma(z) = \sigma(-z) \\
+\sigma^\prime(z) = \sigma(z)(1-\sigma(z)) = \sigma(z)\sigma(-z)\\
+\int\sigma(z)dz = \log(1+e^z) = \zeta(z) \quad \text{(softplus)}
 $$
+But why use this particular bounding function over any other form? Well, it turns out that if we assume a very simple linear model for the probability, this is what results.
+
+We begin by modelling the unnormalised log probability, $\log\tilde{P}(y \mid x)$. This is a good place to start, as whereas  $P(y \mid x) \in [0, 1]$,   $\log\tilde{P}(y \mid x) \in \mathbb{R}$.  The most simple model for our final layer is the linear model[^1]:
+$$
+\log\tilde{P}(y \mid x) = yz = \begin{cases}
+z, & y=1\\
+0, & y=0
+\end{cases}
+$$
+
+[^2]: One useful feature of this form is that one case is constant. We will see when we normalise how this translates into a single output controlling the probabilities of both cases, as required for a Bernoulli distribution.
+
+To convert this into an expression for the probability distribution we take the following steps:
+$$
+\tilde{P}(y \mid x) = e^{yz} = \begin{cases}
+e^z, & y=1\\
+1, & y=0
+\end{cases} \\
+P(y \mid x) = \begin{cases}
+\frac{e^{z}}{1 + e^{z}} = \sigma(z), & y=1\\
+\frac{1}{1 + e^{z}} = \sigma(-z) = 1-\sigma(z), & y=0
+\end{cases}
+$$
+Thus we have shown that the sigmoid activation function is the natural consequence of a linear model for our log probabilities.
+
+We can use this form with the NLL defined in the previous section:
+$$
+J(\theta) = -\log P(y \mid x) = \begin{cases}
+\log(1 + e^{-z}) = \zeta(-z), & y=1\\
+\log(1 + e^{z}) = \zeta(z), & y=0
+\end{cases}
+$$
+Visualising this function, its curve looks like a smooth version of the ReLU function. To minimise these two cases (our objective for the cost function) we must therefore move to the positive and negative extremes for our respective cases.
+
+Thus the consequence of using the sigmoid activation in combination with maximum likelihood is that our learning objective for the logits $z$ is to make the predictions for our 1 labels as positive as possible, and for our 0 labels as negative as possible.
+
+This is pretty much what we would intuitively expect! It's promising to see that ML in combination with a linear log probability model (i.e. sigmoid) leads to such a natural objective for our network.
+
+One practical consideration we also shouldn't overlook here is how amenable this combination of cost function and final layer (/distribution) are to gradient-based optimisation.
+
+What we really care about here is the degree to which the size of the gradient shrinks when the outputs of the layer are towards the extremes. We call this phenomenon *saturation*, and it leads to very slow learning in cases where we have predictions that are incorrect by a large amount[^3].
+
+[^3]: sigmoid activation combined with MSE has *exactly* this problem. See how the left extreme of [this graph](https://www.wolframalpha.com/input/?i=d%2Fdx+%28sigmoid%28x%29-1%29%5E2) (the derivative of the MSE) tends to 0, whereas in our case it tends to -1.
+
+The derivative of the cost function with respect to $z$ are simply:
+$$
+\frac{d}{dz} J(\theta) = \begin{cases}
+-\sigma(-z) = \sigma(z)-1, & y=1\\
+\sigma(z), & y=0
+\end{cases}
+$$
+In the case of a very wrong input for a positive label ($y=1, z \to -\infty$), we have $\sigma(z) = 0$  so the derivative tends to $-1$; for a very wrong negative label the derivative tends to $1$.
+
+This is exactly the behaviour we want: large gradients for very wrong predictions (although not too large). Conversely, the gradient for good predictions tends to zero in both cases. Learning will only slow down for this layer when we get close to the right answer!
+
+
+
