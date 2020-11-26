@@ -1,12 +1,12 @@
 ---
 toc: true
 layout: post
-description: Notes for Chapter 1.2 in the book Deep Learning (Goodfellow et al.).
+description: Notes for Chapter 2 in the book Deep Learning (Goodfellow et al.).
 categories: [deep-learning-book, part-1, linear-algebra]
 title: "Deep Learning Book Notes: Linear Algebra"
 ---
 
-Link to chapter: [1.2 Linear Algebra](https://www.deeplearningbook.org/contents/linear_algebra.html)
+Link to chapter: [2 Linear Algebra](https://www.deeplearningbook.org/contents/linear_algebra.html)
 
 ## Matrix Multiplication
 
@@ -270,7 +270,7 @@ The columns of $D$ are orthogonal and have unit norm, but not square (so it’s 
 
 The encoder is then defined: $f(x) = D^Tx$.
 
-It can be shown this choice minimises $||x - g(c)||_{2}^{2}$.  (i.e. the gradient is zero when $c = D^Tx$)
+It can be shown this choice minimises $\|\|x - g(c)\|\|_{2}^{2}$.  (i.e. the gradient is zero when $c = D^Tx$)
 
 The entire process defines the PCA reconstruction operation: $r(x) = DD^Tx$.
 
@@ -280,7 +280,7 @@ The entire process defines the PCA reconstruction operation: $r(x) = DD^Tx$.
 
 The only question that remains is what we should actually choose for the $l$ $n$-dimensional vectors that make up $D$.
 
-It turns out the optimal choice here is the eigenvectors corresponsing to the $l$ largest eigenvalues of $X^TX$ (i.e. squared singular values of $X$).
+It turns out the optimal choice here is the eigenvectors corresponding to the $l$ largest eigenvalues of $X^TX$ (i.e. squared singular values of $X$).
 
 The proof of this relies on the following:
 
