@@ -8,15 +8,15 @@
 <meta name="generator" content="Jekyll v4.1.1" />
 <meta property="og:title" content="Deep Learning Book Notes: Linear Algebra" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="Notes for Chapter 1.2 in the book Deep Learning (Goodfellow et al.)." />
-<meta property="og:description" content="Notes for Chapter 1.2 in the book Deep Learning (Goodfellow et al.)." />
+<meta name="description" content="Notes for Chapter 2 in the book Deep Learning (Goodfellow et al.)." />
+<meta property="og:description" content="Notes for Chapter 2 in the book Deep Learning (Goodfellow et al.)." />
 <link rel="canonical" href="https://thecharlieblake.co.uk/deep-learning-book/part-1/linear-algebra/2020/11/08/linear-algebra.html" />
 <meta property="og:url" content="https://thecharlieblake.co.uk/deep-learning-book/part-1/linear-algebra/2020/11/08/linear-algebra.html" />
 <meta property="og:site_name" content="Charlie Blake: Blog" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2020-11-08T00:00:00-06:00" />
 <script type="application/ld+json">
-{"url":"https://thecharlieblake.co.uk/deep-learning-book/part-1/linear-algebra/2020/11/08/linear-algebra.html","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://thecharlieblake.co.uk/deep-learning-book/part-1/linear-algebra/2020/11/08/linear-algebra.html"},"headline":"Deep Learning Book Notes: Linear Algebra","dateModified":"2020-11-08T00:00:00-06:00","datePublished":"2020-11-08T00:00:00-06:00","description":"Notes for Chapter 1.2 in the book Deep Learning (Goodfellow et al.).","@context":"https://schema.org"}</script>
+{"description":"Notes for Chapter 2 in the book Deep Learning (Goodfellow et al.).","mainEntityOfPage":{"@type":"WebPage","@id":"https://thecharlieblake.co.uk/deep-learning-book/part-1/linear-algebra/2020/11/08/linear-algebra.html"},"url":"https://thecharlieblake.co.uk/deep-learning-book/part-1/linear-algebra/2020/11/08/linear-algebra.html","@type":"BlogPosting","headline":"Deep Learning Book Notes: Linear Algebra","dateModified":"2020-11-08T00:00:00-06:00","datePublished":"2020-11-08T00:00:00-06:00","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://thecharlieblake.co.uk/feed.xml" title="Charlie Blake: Blog" /><link rel="shortcut icon" type="image/png" href="/images/favicon.png">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
@@ -88,7 +88,7 @@ window.onload = wrap_img;
         <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
 
   <header class="post-header">
-    <h1 class="post-title p-name" itemprop="name headline">Deep Learning Book Notes: Linear Algebra</h1><p class="page-description">Notes for Chapter 1.2 in the book Deep Learning (Goodfellow et al.).</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2020-11-08T00:00:00-06:00" itemprop="datePublished">
+    <h1 class="post-title p-name" itemprop="name headline">Deep Learning Book Notes: Linear Algebra</h1><p class="page-description">Notes for Chapter 2 in the book Deep Learning (Goodfellow et al.).</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2020-11-08T00:00:00-06:00" itemprop="datePublished">
         Nov 8, 2020
       </time>
        • <span class="read-time" title="Estimated read time">
@@ -160,7 +160,7 @@ window.onload = wrap_img;
 <li class="toc-entry toc-h3"><a href="#choice-of-decoding-matrix">Choice of Decoding Matrix</a></li>
 </ul>
 </li>
-</ul><p>Link to chapter: <a href="https://www.deeplearningbook.org/contents/linear_algebra.html">1.2 Linear Algebra</a></p>
+</ul><p>Link to chapter: <a href="https://www.deeplearningbook.org/contents/linear_algebra.html">2 Linear Algebra</a></p>
 
 <h2 id="matrix-multiplication">
 <a class="anchor" href="#matrix-multiplication" aria-hidden="true"><span class="octicon octicon-link"></span></a>Matrix Multiplication</h2>
@@ -451,17 +451,7 @@ s76,-153,76,-153s77,-151,77,-151c0.7,0.7,35.7,202,105,604c67.3,400.7,102,602.7,1
 
 <p>The encoder is then defined: $f(x) = D^Tx$.</p>
 
-<table>
-  <tbody>
-    <tr>
-      <td>It can be shown this choice minimises $</td>
-      <td> </td>
-      <td>x - g(c)</td>
-      <td> </td>
-      <td>_{2}^{2}$.  (i.e. the gradient is zero when $c = D^Tx$)</td>
-    </tr>
-  </tbody>
-</table>
+<p>It can be shown this choice minimises $||x - g(c)||_{2}^{2}$.  (i.e. the gradient is zero when $c = D^Tx$)</p>
 
 <p>The entire process defines the PCA reconstruction operation: $r(x) = DD^Tx$.</p>
 
@@ -470,7 +460,7 @@ s76,-153,76,-153s77,-151,77,-151c0.7,0.7,35.7,202,105,604c67.3,400.7,102,602.7,1
 
 <p>The only question that remains is what we should actually choose for the $l$ $n$-dimensional vectors that make up $D$.</p>
 
-<p>It turns out the optimal choice here is the eigenvectors corresponsing to the $l$ largest eigenvalues of $X^TX$ (i.e. squared singular values of $X$).</p>
+<p>It turns out the optimal choice here is the eigenvectors corresponding to the $l$ largest eigenvalues of $X^TX$ (i.e. squared singular values of $X$).</p>
 
 <p>The proof of this relies on the following:</p>
 
