@@ -14,7 +14,7 @@ Several people have asked me recently how one might measure the *difficulty* of 
 
 The answer to this is, of course, *sort of!*
 
-Someone who I've been in correspondence with recently posted this question on the board games stack exchange and I decided to reply. Because my post was rather long I've decided to reproduce it here too. Here's what I replied:
+Someone who I've been in correspondence with recently posted this question on the board games stack exchange and I decided to reply. You can see the post at [this link](https://boardgames.stackexchange.com/questions/53504/how-to-measure-the-difficulty-of-a-given-deal-in-klondike-solitaire). Because my post was rather long I've decided to reproduce it here too:
 
 ---
 
@@ -70,7 +70,7 @@ Firstly, consider the stock. The standard rules require we turn over 3 cards in 
 
 Finally, in [our paper on Solvitaire](https://arxiv.org/pdf/1906.12314.pdf) we consider something called **dominances**. These are cases in which we can prove that one of the available moves is *guaranteed* to be a good move. For instance, sometimes it can clearly be shown that "putting up" say an ace, is always the right thing to do. This is often obvious to a human player and one might not wish to count this as a  move (Solvitaire doesn't count this as an extra move).
 
-## In summary:
+## In Summary
 
 - One must first consider solvability
 - Then if a layout is solvable, one can begin with easier, but  probably less accurate methods like the number of possible solutions, or the depth of the best solution
