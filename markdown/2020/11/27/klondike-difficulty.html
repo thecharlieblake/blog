@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>How to Measure the Difficulty of a Klondike Deal | Charlie Blake: Blog</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="How to Measure the Difficulty of a Klondike Deal" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Estimating the difficulty of a Klondike deal using a computerised solver" />
+<meta property="og:description" content="Estimating the difficulty of a Klondike deal using a computerised solver" />
+<link rel="canonical" href="https://thecharlieblake.co.uk/markdown/2020/11/27/klondike-difficulty.html" />
+<meta property="og:url" content="https://thecharlieblake.co.uk/markdown/2020/11/27/klondike-difficulty.html" />
+<meta property="og:site_name" content="Charlie Blake: Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-11-27T00:00:00-06:00" />
+<script type="application/ld+json">
+{"description":"Estimating the difficulty of a Klondike deal using a computerised solver","mainEntityOfPage":{"@type":"WebPage","@id":"https://thecharlieblake.co.uk/markdown/2020/11/27/klondike-difficulty.html"},"url":"https://thecharlieblake.co.uk/markdown/2020/11/27/klondike-difficulty.html","@type":"BlogPosting","headline":"How to Measure the Difficulty of a Klondike Deal","dateModified":"2020-11-27T00:00:00-06:00","datePublished":"2020-11-27T00:00:00-06:00","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://thecharlieblake.co.uk/feed.xml" title="Charlie Blake: Blog" /><link rel="shortcut icon" type="image/png" href="/images/favicon.png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Charlie Blake: Blog</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About Me</a><a class="page-link" href="/search/">Search</a><a class="page-link" href="/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">How to Measure the Difficulty of a Klondike Deal</h1><p class="page-description">Estimating the difficulty of a Klondike deal using a computerised solver</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2020-11-27T00:00:00-06:00" itemprop="datePublished">
+        Nov 27, 2020
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      6 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/categories/#markdown">markdown</a>
+        
+      
+      </p>
+    
+
+    </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul class="section-nav">
+<li class="toc-entry toc-h2"><a href="#preamble">Preamble</a></li>
+<li class="toc-entry toc-h2"><a href="#unsolvable-layouts">Unsolvable Layouts</a></li>
+<li class="toc-entry toc-h2"><a href="#solvable-layouts">Solvable Layouts</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#size-of-search-tree">Size of Search Tree</a></li>
+<li class="toc-entry toc-h3"><a href="#depth-of-shallowest--best-solution">Depth of Shallowest / Best Solution</a></li>
+<li class="toc-entry toc-h3"><a href="#number-of-different-solutions">Number of different solutions</a></li>
+<li class="toc-entry toc-h3"><a href="#number-of-states-searched-until-first-solution">Number of states searched until first solution</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#what-is-a-move-dominances-and-k">What Is A Move: Dominances and K+</a></li>
+<li class="toc-entry toc-h2"><a href="#in-summary">In summary:</a></li>
+</ul><h2 id="preamble">
+<a class="anchor" href="#preamble" aria-hidden="true"><span class="octicon octicon-link"></span></a>Preamble</h2>
+
+<p>In 2018 <a href="https://ipg.host.cs.st-andrews.ac.uk/">Ian Gent</a> and I worked on a project to solve solitaire card games. We wrote <a href="https://arxiv.org/abs/1906.12314">a paper</a> together and produced a rather neat solver called <a href="https://github.com/thecharlieblake/Solvitaire">Solvitaire</a>. We managed to prove the win rate for the most popular solitaire game, <a href="https://en.wikipedia.org/wiki/Klondike_(solitaire)">Klondike</a>, to within a very tight bound (81.956% ± 0.096% to be precise!) and found a lot of other win rates for many other games.</p>
+
+<p>Several people have asked me recently how one might measure the <em>difficulty</em> of a particular deal/layout in standard Klondike. I.e. given some starting setup for the game, is there any way I can automatically get a good estimate for how long it will take the average player to solve, without having to actually play the game themselves?</p>
+
+<p>The answer to this is, of course, <em>sort of!</em></p>
+
+<p>Someone who I’ve been in correspondence with recently posted this question on the board games stack exchange and I decided to reply. Because my post was rather long I’ve decided to reproduce it here too. Here’s what I replied:</p>
+
+<hr>
+
+<p>From a human perspective I suppose one’s interpretation of difficulty is quite subjective: what one person might find difficult another may  find easy. If, for our purposes, we use a rough definition along the  lines of, “how much time the average player spends on a layout”, then  there are a few interesting things we can say about the relationship  between a layout’s difficulty and its general features.</p>
+
+<p>As your first point suggests, the solvability of the layout (i.e.  does a sequence of legal moves exist that results in a win) is obviously key. Let’s consider this case first:</p>
+
+<h2 id="unsolvable-layouts">
+<a class="anchor" href="#unsolvable-layouts" aria-hidden="true"><span class="octicon octicon-link"></span></a>Unsolvable Layouts</h2>
+
+<p>If a layout is not solvable then in one sense it’s infinitely difficult. However, even for unsolvable layouts, the depth of the <a href="https://en.wikipedia.org/wiki/Search_tree">search tree</a> can reflect a kind of difficulty.</p>
+
+<p>In the extreme case, if to begin with there are no legal moves  available in the tableau (main cards) or the stock, then although the  layout isn’t solvable, in a sense it is easy because you can immediately give up. Alternatively, a layout may have a huge number of promising  moves, only to turn out to be unsolvable in the end.</p>
+
+<p>Using a tool like <a href="https://github.com/thecharlieblake/Solvitaire">Solvitaire</a> (full disclosure: I am one of the authors of Solvitaire) can identify  unsolvable layouts and record the number of unique states that needed to be searched to prove that there’s no solution (often a very large  number of states!). Another good solver is <a href="https://github.com/ShootMe/Klondike-Solver">Klondike-Solver</a>, although I’m not aware of what metrics it reports.</p>
+
+<p>This isn’t a perfect measure by any means. Humans aren’t computers,  and our brains probably aren’t using depth-first search in the way a  solver might. Without looking at human gameplay data though, this is  probably the best heuristic of difficulty for unsolvable layouts.</p>
+
+<h2 id="solvable-layouts">
+<a class="anchor" href="#solvable-layouts" aria-hidden="true"><span class="octicon octicon-link"></span></a>Solvable Layouts</h2>
+
+<p>As was the case for unsolvable layouts, if one has access to human  gameplay data then that’s almost certainly going to be the best source  of understanding how difficult humans will find a layout.</p>
+
+<p>Let’s assume though, that we don’t have this data available, but we  do have a computerised solver. Just looking at the static cards in the  starting layout is unlikely to tell us much, but by running the solver  we can deduce more about a deal’s difficulty (for a human).</p>
+
+<p>Here are some heuristics one could use instead:</p>
+
+<h3 id="size-of-search-tree">
+<a class="anchor" href="#size-of-search-tree" aria-hidden="true"><span class="octicon octicon-link"></span></a>Size of Search Tree</h3>
+
+<p>For a computer this is important, but in the solvable case it may not tell us much about human play. For instance, the search tree for a  layout could be huge, but have one solution that’s very obvious to a  human. We would not want to classify such a layout as difficult just  because it has a large search tree.</p>
+
+<h3 id="depth-of-shallowest--best-solution">
+<a class="anchor" href="#depth-of-shallowest--best-solution" aria-hidden="true"><span class="octicon octicon-link"></span></a>Depth of Shallowest / Best Solution</h3>
+
+<p>Based on the above logic, the depth of the shallowest (i.e. “best”)  solution in the search tree is perhaps a better measure. However, this  still may not be ideal. We might label a layout as easy because it has a shallow solution, but if this solution is extremely hard for a human to spot then our heuristic will be misleading.</p>
+
+<h3 id="number-of-different-solutions">
+<a class="anchor" href="#number-of-different-solutions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Number of different solutions</h3>
+
+<p>This heuristic could be quite accurate, although it’s hard to say.  Having a lot of different solutions in the search tree would suggest a  human player is likely to come across a solution sooner, but there is no guarantee. This would certainly be something worth exploring further.</p>
+
+<h3 id="number-of-states-searched-until-first-solution">
+<a class="anchor" href="#number-of-states-searched-until-first-solution" aria-hidden="true"><span class="octicon octicon-link"></span></a>Number of states searched until first solution</h3>
+
+<p>This is probably the most obvious heuristic: how many states did it  take before the solver came across the first solution? However, this  measure can be deeply flawed. There is no guarantee that computerised  solvers search in anything like the kind of order a human would search  in (Solvitaire certainly doesn’t).</p>
+
+<p>Say move “A” obviously leads to a solution in a few moves, whereas  move “B” leads in a very different direction. There is no guarantee the  solver picks “A” first; it might instead pick “B” and try thousands or  even millions more moves before it backtracks to the point where it  thinks to try “A”.</p>
+
+<p>To make this kind of method work one needs a policy for which moves to try. For Solvitaire, which just wants to explore <em>all possible</em> moves, this doesn’t matter, but for determining difficulty this is very important! If one could come up with a  policy which reflected closely  how an average human would play, then the number of states searched  until the first solution would be an excellent metric. But coming up  with such a metric is hard, complex work.</p>
+
+<h2 id="what-is-a-move-dominances-and-k">
+<a class="anchor" href="#what-is-a-move-dominances-and-k" aria-hidden="true"><span class="octicon octicon-link"></span></a>What Is A Move: Dominances and K+</h2>
+
+<p>In all of these discussions we’ve talked about moves and states. But how we define a move in Klondike is actually not trivial.</p>
+
+<p>Firstly, consider the stock. The standard rules require we turn over 3 cards in one go. A consequence of this is that at different times there are different groups of cards that are effectively “available” to us.</p>
+
+<p><a href="http://web.engr.oregonstate.edu/~afern/papers/solitaire.pdf">Bjarnason et al.</a> use a solver which can move any of the available stock cards into the tableau in a single move (they call this the <strong>K+ representation</strong>). For a human, this is like saying “I remember there’s a 5H in there, so  I’ll just loop back over the stock to get it”. From the point of  considering difficulty, one may wish to consider this sort of thing to  be a single move, rather than several separate moves.</p>
+
+<p>Finally, in <a href="https://arxiv.org/pdf/1906.12314.pdf">our paper on Solvitaire</a> we consider something called <strong>dominances</strong>. These are cases in which we can prove that one of the available moves is <em>guaranteed</em> to be a good move. For instance, sometimes it can clearly be shown that “putting up” say an ace, is always the right thing to do. This is often obvious to a human player and one might not wish to count this as a  move (Solvitaire doesn’t count this as an extra move).</p>
+
+<h2 id="in-summary">
+<a class="anchor" href="#in-summary" aria-hidden="true"><span class="octicon octicon-link"></span></a>In summary:</h2>
+
+<ul>
+  <li>One must first consider solvability</li>
+  <li>Then if a layout is solvable, one can begin with easier, but  probably less accurate methods like the number of possible solutions, or the depth of the best solution</li>
+  <li>Finally, and <em>only</em> if one can craft a good (human-like)  policy for moves to try at each search step, a better approach may be to measure the number of states the solver searches until the fist  solution</li>
+</ul>
+
+
+  </div><a class="u-url" href="/markdown/2020/11/27/klondike-difficulty.html" hidden></a>
+</article>
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>Charlie Blake&#39;s personal blog</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/thecharlieblake" title="thecharlieblake"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/thecharlieblake" title="thecharlieblake"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
