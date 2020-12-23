@@ -7,16 +7,18 @@
 <title>Bare-Bones Backpropagation | Charlie Blake: Blog</title>
 <meta name="generator" content="Jekyll v4.1.1" />
 <meta property="og:title" content="Bare-Bones Backpropagation" />
+<meta name="author" content="Charlie Blake" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="Charlie Blake’s personal blog" />
-<meta property="og:description" content="Charlie Blake’s personal blog" />
-<link rel="canonical" href="https://thecharlieblake.co.uk/2020/12/23/simple-backprop.html" />
-<meta property="og:url" content="https://thecharlieblake.co.uk/2020/12/23/simple-backprop.html" />
+<meta name="description" content="Demonstrating the simplest possible backpropagation implementation, with all the clutter removed." />
+<meta property="og:description" content="Demonstrating the simplest possible backpropagation implementation, with all the clutter removed." />
+<link rel="canonical" href="https://thecharlieblake.co.uk/neural-networks/backpropagation/2020/12/23/simple-backprop.html" />
+<meta property="og:url" content="https://thecharlieblake.co.uk/neural-networks/backpropagation/2020/12/23/simple-backprop.html" />
 <meta property="og:site_name" content="Charlie Blake: Blog" />
+<meta property="og:image" content="https://thecharlieblake.co.uk/images/blog/simple-backprop/viz.png" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2020-12-23T00:00:00-06:00" />
 <script type="application/ld+json">
-{"url":"https://thecharlieblake.co.uk/2020/12/23/simple-backprop.html","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://thecharlieblake.co.uk/2020/12/23/simple-backprop.html"},"headline":"Bare-Bones Backpropagation","dateModified":"2020-12-23T00:00:00-06:00","datePublished":"2020-12-23T00:00:00-06:00","description":"Charlie Blake’s personal blog","@context":"https://schema.org"}</script>
+{"image":"https://thecharlieblake.co.uk/images/blog/simple-backprop/viz.png","url":"https://thecharlieblake.co.uk/neural-networks/backpropagation/2020/12/23/simple-backprop.html","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://thecharlieblake.co.uk/neural-networks/backpropagation/2020/12/23/simple-backprop.html"},"author":{"@type":"Person","name":"Charlie Blake"},"headline":"Bare-Bones Backpropagation","dateModified":"2020-12-23T00:00:00-06:00","datePublished":"2020-12-23T00:00:00-06:00","description":"Demonstrating the simplest possible backpropagation implementation, with all the clutter removed.","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://thecharlieblake.co.uk/feed.xml" title="Charlie Blake: Blog" /><link rel="shortcut icon" type="image/png" href="/images/favicon.png">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
@@ -88,9 +90,11 @@ window.onload = wrap_img;
         <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
 
   <header class="post-header">
-    <h1 class="post-title p-name" itemprop="name headline">Bare-Bones Backpropagation</h1><p class="post-meta post-meta-title"><time class="dt-published" datetime="2020-12-23T00:00:00-06:00" itemprop="datePublished">
+    <h1 class="post-title p-name" itemprop="name headline">Bare-Bones Backpropagation</h1><p class="page-description">Demonstrating the simplest possible backpropagation implementation, with all the clutter removed.</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2020-12-23T00:00:00-06:00" itemprop="datePublished">
         Dec 23, 2020
-      </time>
+      </time>• 
+          <span itemprop="author" itemscope itemtype="http://schema.org/Person">
+            <span class="p-author h-card" itemprop="name">Charlie Blake</span></span>
        • <span class="read-time" title="Estimated read time">
     
     
@@ -98,6 +102,16 @@ window.onload = wrap_img;
     
 </span></p>
 
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/categories/#neural-networks">neural-networks</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#backpropagation">backpropagation</a>
+        
+      
+      </p>
     
 
     
@@ -628,7 +642,15 @@ epoch: 9 | correct: 0.96, loss: 0.12
 
 
 
-  </div><a class="u-url" href="/2020/12/23/simple-backprop.html" hidden></a>
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="thecharlieblake/blog"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/neural-networks/backpropagation/2020/12/23/simple-backprop.html" hidden></a>
 </article>
       </div>
     </main><footer class="site-footer h-card">
