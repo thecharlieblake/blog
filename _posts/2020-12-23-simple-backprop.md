@@ -1,6 +1,13 @@
 ---
 keywords: fastai
+description: Demonstrating the simplest possible backpropagation implementation, with all the clutter removed.
 title: Bare-Bones Backpropagation
+toc: true
+badges: true
+comments: true
+author: Charlie Blake
+categories: [neural-networks, backpropagation]
+image: images/blog/simple-backprop/viz.png
 nb_path: _notebooks/2020-12-23-simple-backprop.ipynb
 layout: notebook
 ---
