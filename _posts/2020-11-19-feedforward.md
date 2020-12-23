@@ -208,7 +208,7 @@ P(y=i \mid x) = a_i = \text{softmax}(z)_i = \frac{e^{z_i}}{\sum_{k=1}^ne^{z_k}}
 $$
 
 
-This $\text{softmax}(z)_i$ function is the generalisation of the sigmoid over a vector. It's derivative is also similar (in fact, for the first case it's the same). We find this using the quotient rule:
+We can think of this $\text{softmax}(z)_i$ function as a "soft" version of the $\arg\max$ function; in fact, some suggest that it should more properly be named $\text{softargmax}.$ Softmax is the generalisation of the sigmoid over a vector. It's derivative is also similar (in fact, for the first case it's the same). We find this using the quotient rule:
 
 
 $$
@@ -253,3 +253,20 @@ Fantastic! This is exactly the same as the gradient in the binary-case, but we h
 
 We won't prove it here, but if we create a regression model which outputs the mean of a Gaussian, it turns out that the partial derivatives at for the final layer are also of the form $a_i - y_i$ . It turns out that's a really simple and desirable gradient for the final layer!
 
+### Numerically Stable Softmax
+
+We should instinctively be wary of the exponential and log terms in our softmax function. As we saw in chapter 4, these terms have the potential to drive our values into ranges that can't be precisely represented by floating-point numbers if we're not careful.
+
+Specifically, we want to avoid extremely large or extremely negative inputs to the softmax, that will drive the exponentials to infinity or zero respectively.
+
+Fortunately, there is a trick which can help in this regard. It can be easily shown that  $\text{softmax}(\mathbb{z}) = \text{softmax}(\mathbb{z} + c)$. From this we can derive our numerically stable variant of softmax:
+
+
+$$
+\text{softmax}(\mathbb{z}) = \text{softmax}(\mathbb{z} - \max_i z_i)
+$$
+
+
+This means that our inputs to the function are simply the differences between each input and the largest input. Thus, if the scale of all the inputs becomes very large or negative, the computation will still be stable so long as the relative values are not extremely different across the inputs[^4].
+
+[^4]: I believe that the gradient of the softmax should discourage these relative values getting too large, but I'm not sure. If this is the case, then we are protected against numerical instability from all directions.
