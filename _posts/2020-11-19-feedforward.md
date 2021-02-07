@@ -270,3 +270,82 @@ $$
 This means that our inputs to the function are simply the differences between each input and the largest input. Thus, if the scale of all the inputs becomes very large or negative, the computation will still be stable so long as the relative values are not extremely different across the inputs[^4].
 
 [^4]: I believe that the gradient of the softmax should discourage these relative values getting too large, but I'm not sure. If this is the case, then we are protected against numerical instability from all directions.
+
+
+
+## General Back-Propagation
+
+The purpose-crafted output layers and cost functions above are designed to reduce to simple derivatives with useful properties.
+
+In the general case though, neural architectures are not guaranteed to have nice mathematical expressions representing the derivatives. We require a method for calculating these automatically. This is the domain of the **back-propagation** algorithm.
+
+The premise of back-propagation is the use of the chain rule to calculate derivatives of parameters with respect to the cost function. Doing this in the naive way for each node in the network requires exponentially many computational steps. The insight for back-propagation is that this can be reduced substantially by computing and retaining the derivatives, computed front-to-back[^5]. 
+
+[^5]: The chain rule can be computed from the left or right, the latter of which enables back-propagation. This is typically preferred as it build up gradients from front to back, which is quicker in the (standard) case where the number of neurons reduces as we proceed (with a single output neuron). I think there are some cases though in which it's actually more efficient to go forward.
+
+Below is the most general form of the back-propagation algorithm, which can be applied to any model comprising differentiable operations.
+
+### General Approach
+
+Our objective here is to create a second computational graph that flows backwards to compute gradients.
+
+This enables us to do the forward and backward pass in exactly the same way. In the textbook it is suggested that these graphs are combined, although they could equally be managed separately.
+
+### Preliminaries
+
+#### Tensor Notation
+
+We assume a computation graph where each node represents an operation parameterised by a tensor $\mathsf{X}$.
+
+Tensors are typically indexed with a coordinate per rank, which can make notation challenging. To simplify this, we index using a single coordinate representing the tuple of original coordinates. This allows us to essentially treat the tensor (and its gradient) like a standard 2D matrix in our equations.
+
+Based on this, we can write the chain rule as it applies to tensors. Letting $\mathsf{Y} = g(\mathsf{X})$ and $z = f(\mathsf{Y})$:[^6]
+
+
+$$
+\nabla_{\mathsf{X}}z = \sum_j \: \nabla_{\mathsf{X}}\mathsf{Y}_j \; \frac{\delta z}{\delta \mathsf{Y}_j}
+$$
+
+[^6]: My instinct for this equation is to think that we can represent this as one inner product. But $\nabla_{\mathsf{X}}\mathsf{Y}_j$ is already a matrix, so unless we want to get into some fairly scary tensor notation (not necessary, potentially less useful!) it's better to leave it like this. Recall as well that our standard assumption is that the derivative of the cost with respect to a parameter tensor has the same shape as that tensor.
+
+### Requirements
+
+1. A computation graph $\mathcal{G}$ where nodes represent variables and edges their dependencies. The function $\mathtt{get children(\mathsf{V})}$ is assumed to exist.
+2. A set of target variables $\mathbb{T}$ whose gradients must be computed.
+3. The variable to be differentiated $z$.
+4. A back-propagation operation for each variable $\mathsf{V}$:  $\; \mathtt{bprop(\mathsf{V}, \mathsf{W}, \mathsf{D})}$.
+
+For each fundamental operation used in $\mathcal{G}$, the framework/programmer must define a corresponding back-propagation operation, which should satisfy the following equation:
+
+
+$$
+\mathtt{bprop(\mathsf{V}, \mathsf{W}, \mathsf{D})} = \sum_j \: (\nabla_{\mathsf{V}}\mathsf{W}_j) \; \mathsf{D}_j
+$$
+
+
+where $\mathsf{D}$ is expected to represent $\frac{\delta z}{\delta \mathsf{W}}$. This is just a step of the chain rule we're familiar with for a given operation.
+
+The final thing to note is the existence of a pre-processing step which prunes all nodes that are not on any path from $\mathbb{T}$ to $\mathcal{G}$. When adding the new backwards nodes we do this to the full graph, but for all other purposes we consider the pruned graph.
+
+### Algorithm
+
+```python
+def general_back_propagation(T, z):
+    grad_table = {z: 1}  // mutable
+    for V in T:
+        build_grad(V, grad_table)
+    return {v: g for v, g in grad_table if v in V}
+
+def build_grad(V, grad_table):
+    if V in grad_table:
+        return grad_table[V]
+    grad_v = 0
+    for W in get_children(V):
+        D = build_grad(W, grad_table)
+        grad_v += bprop(V, W, D)
+    grad_table[V] = grad_v
+    # + function to insert grad_table[V] into graph, along with ops creating it
+    return grad_v
+```
+
+For an example of this in practice, see my notebook outlining [how to implement back-propagation for a vanilla neural network](https://thecharlieblake.co.uk/neural-networks/backpropagation/2020/12/23/simple-backprop.html)!

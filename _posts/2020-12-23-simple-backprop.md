@@ -30,12 +30,10 @@ layout: notebook
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>The first few times I came across backpropagation I struggled to get a feel for what was going on. It's not just enough
-to follow the equations - I couldn't visualise the operations and updates in a nice, clean way.</p>
-<p>If someone had shown me then how it's really just a generalisation of our old friend the chain rule--and barely any
-more complex--then I think it would have helped me a lot. But instead I got bogged down in the matrix notation, and
-figuring out what dimension went with what, and lost sight of what was really going on.</p>
-<p>So this is a simple-as-possible backprop implementation. I don't go into the maths here. I assume the reader already knows what's going on in theory, but doesn't have a great feel for what happens in practice, when we have batches and layers and thesors and so on.</p>
-<p>This can also serve as a reference for how to implement this from scratch in the nicest way. Enjoy!</p>
+to follow the equations - I couldn't visualise the operations and updates, especially the mysterious backwards pass.</p>
+<p>If someone had shown me then how simple it was to implement the key part of the training algorithm that figures out how to update the weights, then it would have helped me a lot. I understood how the chain rule worked and its relevance here, but I didn't have a picture of it in my head. I got bogged down in the matrix notation and PyTorch tensors and lost sight of what was really going on.</p>
+<p>So this is a simple-as-possible backprop implementation, to clear up that confusion. I don't go into the maths; I assume the reader already knows what's going on in theory, but doesn't have a great feel for what happens in practice.</p>
+<p>This can also serve as a reference for how to implement this from scratch a clean way. Enjoy!</p>
 
 </div>
 </div>
@@ -64,7 +62,7 @@ classic <em>MNIST</em> dataset:</p>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">math</span>
+<div class=" highlight hl-python"><pre><span></span><span class="kn">import</span> <span class="nn">math</span>
 <span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">import</span> <span class="nn">torchvision</span>
 <span class="kn">from</span> <span class="nn">torchvision.datasets</span> <span class="kn">import</span> <span class="n">MNIST</span>
@@ -153,7 +151,7 @@ classic <em>MNIST</em> dataset:</p>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">LinearLayer</span><span class="p">:</span>
+<div class=" highlight hl-python"><pre><span></span><span class="k">class</span> <span class="nc">LinearLayer</span><span class="p">:</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_sz</span><span class="p">,</span> <span class="n">out_sz</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">W</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xavier_init</span><span class="p">(</span><span class="n">in_sz</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">out_sz</span><span class="p">)</span>  <span class="c1"># (in+1, out)</span>
     <span class="k">def</span> <span class="nf">_xavier_init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">o</span><span class="p">):</span> <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">o</span><span class="p">)</span><span class="o">.</span><span class="n">uniform_</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">6.</span><span class="o">/</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="n">o</span><span class="p">))</span>
     
@@ -186,7 +184,7 @@ classic <em>MNIST</em> dataset:</p>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">ReLU</span><span class="p">:</span>
+<div class=" highlight hl-python"><pre><span></span><span class="k">class</span> <span class="nc">ReLU</span><span class="p">:</span>
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">X</span> <span class="o">=</span> <span class="n">X</span>
         <span class="k">return</span> <span class="n">X</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span><span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>  <span class="c1"># (batch_sz, in)</span>
@@ -224,7 +222,7 @@ classic <em>MNIST</em> dataset:</p>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">SoftmaxCrossEntropyLoss</span><span class="p">:</span>  <span class="c1"># (batch_sz, in=out) for all dims in this layer</span>
+<div class=" highlight hl-python"><pre><span></span><span class="k">class</span> <span class="nc">SoftmaxCrossEntropyLoss</span><span class="p">:</span>  <span class="c1"># (batch_sz, in=out) for all dims in this layer</span>
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">Y</span> <span class="o">=</span> <span class="n">Y</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">Y_prob</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_softmax</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
@@ -266,7 +264,7 @@ The <code>gradient_descent()</code> function then gets the matrix of updates for
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">NeuralNet</span><span class="p">:</span>
+<div class=" highlight hl-python"><pre><span></span><span class="k">class</span> <span class="nc">NeuralNet</span><span class="p">:</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_size</span><span class="o">=</span><span class="mi">28</span><span class="o">*</span><span class="mi">28</span><span class="p">,</span> <span class="n">hidden_size</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span> <span class="n">output_size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.001</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="n">alpha</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">z1</span> <span class="o">=</span> <span class="n">LinearLayer</span><span class="p">(</span><span class="n">input_size</span><span class="p">,</span> <span class="n">hidden_size</span><span class="p">)</span>
@@ -321,9 +319,9 @@ The <code>gradient_descent()</code> function then gets the matrix of updates for
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">NeuralNet</span><span class="p">()</span>
+<div class=" highlight hl-python"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">NeuralNet</span><span class="p">()</span>
 <span class="n">stats</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;correct&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">&#39;loss&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">&#39;epoch&#39;</span><span class="p">:</span> <span class="p">[]}</span>
-<span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+<span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
     <span class="n">correct</span><span class="p">,</span> <span class="n">loss</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">train</span><span class="p">):</span>
         <span class="n">y_prob</span><span class="p">,</span> <span class="n">batch_correct</span><span class="p">,</span> <span class="n">batch_loss</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
@@ -350,94 +348,13 @@ The <code>gradient_descent()</code> function then gets the matrix of updates for
 </div>
 </p>
     </details>
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>epoch: 0 | correct: 0.87, loss: 0.47
-epoch: 1 | correct: 0.92, loss: 0.28
-epoch: 2 | correct: 0.93, loss: 0.23
-epoch: 3 | correct: 0.94, loss: 0.20
-epoch: 4 | correct: 0.95, loss: 0.18
-epoch: 5 | correct: 0.95, loss: 0.16
-epoch: 6 | correct: 0.96, loss: 0.15
-epoch: 7 | correct: 0.96, loss: 0.14
-epoch: 8 | correct: 0.96, loss: 0.13
-epoch: 9 | correct: 0.96, loss: 0.12
-</pre>
-</div>
-</div>
-
-<div class="output_area">
-
-
-<div class="output_html rendered_html output_subarea output_execute_result">
-
-<div id="altair-viz-baa92da218ff4d3cb41d464cac84b660"></div>
-<script type="text/javascript">
-  (function(spec, embedOpt){
-    let outputDiv = document.currentScript.previousElementSibling;
-    if (outputDiv.id !== "altair-viz-baa92da218ff4d3cb41d464cac84b660") {
-      outputDiv = document.getElementById("altair-viz-baa92da218ff4d3cb41d464cac84b660");
-    }
-    const paths = {
-      "vega": "https://cdn.jsdelivr.net/npm//vega@5?noext",
-      "vega-lib": "https://cdn.jsdelivr.net/npm//vega-lib?noext",
-      "vega-lite": "https://cdn.jsdelivr.net/npm//vega-lite@4.8.1?noext",
-      "vega-embed": "https://cdn.jsdelivr.net/npm//vega-embed@6?noext",
-    };
-
-    function loadScript(lib) {
-      return new Promise(function(resolve, reject) {
-        var s = document.createElement('script');
-        s.src = paths[lib];
-        s.async = true;
-        s.onload = () => resolve(paths[lib]);
-        s.onerror = () => reject(`Error loading script: ${paths[lib]}`);
-        document.getElementsByTagName("head")[0].appendChild(s);
-      });
-    }
-
-    function showError(err) {
-      outputDiv.innerHTML = `<div class="error" style="color:red;">${err}</div>`;
-      throw err;
-    }
-
-    function displayChart(vegaEmbed) {
-      vegaEmbed(outputDiv, spec, embedOpt)
-        .catch(err => showError(`Javascript Error: ${err.message}<br>This usually means there's a typo in your chart specification. See the javascript console for the full traceback.`));
-    }
-
-    if(typeof define === "function" && define.amd) {
-      requirejs.config({paths});
-      require(["vega-embed"], displayChart, err => showError(`Error loading script: ${err.message}`));
-    } else if (typeof vegaEmbed === "function") {
-      displayChart(vegaEmbed);
-    } else {
-      loadScript("vega")
-        .then(() => loadScript("vega-lite"))
-        .then(() => loadScript("vega-embed"))
-        .catch(showError)
-        .then(() => displayChart(vegaEmbed));
-    }
-  })({"config": {"view": {"continuousWidth": 400, "continuousHeight": 300}}, "layer": [{"mark": {"type": "line", "interpolate": "monotone", "stroke": "#5276A7"}, "encoding": {"tooltip": {"type": "quantitative", "field": "loss"}, "x": {"type": "quantitative", "axis": {"title": "epoch"}, "field": "epoch"}, "y": {"type": "quantitative", "axis": {"title": "Loss", "titleColor": "#5276A7"}, "field": "loss", "scale": {"domain": [0.0, 0.47194650769233704]}}}}, {"mark": {"type": "line", "interpolate": "monotone", "stroke": "#57A44C"}, "encoding": {"tooltip": {"type": "quantitative", "field": "correct"}, "x": {"type": "quantitative", "axis": {"title": "epoch"}, "field": "epoch"}, "y": {"type": "quantitative", "axis": {"title": "Correct", "titleColor": "#57A44C"}, "field": "correct", "scale": {"domain": [0.8700526385927538, 1.0]}}}}], "data": {"name": "data-551adda8aec31a1fe519546b549c9e76"}, "resolve": {"scale": {"y": "independent"}}, "$schema": "https://vega.github.io/schema/vega-lite/v4.8.1.json", "datasets": {"data-551adda8aec31a1fe519546b549c9e76": [{"correct": 0.8700526385927538, "loss": 0.47194650769233704, "epoch": 0}, {"correct": 0.9205423773987237, "loss": 0.2753719389438629, "epoch": 1}, {"correct": 0.9332855810234594, "loss": 0.22961291670799255, "epoch": 2}, {"correct": 0.9432469349680197, "loss": 0.19969312846660614, "epoch": 3}, {"correct": 0.9497101545842259, "loss": 0.17908376455307007, "epoch": 4}, {"correct": 0.953991204690836, "loss": 0.16318272054195404, "epoch": 5}, {"correct": 0.9573727345415821, "loss": 0.15032540261745453, "epoch": 6}, {"correct": 0.960104610874205, "loss": 0.13999834656715393, "epoch": 7}, {"correct": 0.9624700159914752, "loss": 0.1315470188856125, "epoch": 8}, {"correct": 0.9643356876332664, "loss": 0.12460409104824066, "epoch": 9}]}}, {"mode": "vega-lite"});
-</script>
-</div>
-
-</div>
-
-</div>
-</div>
-
 </div>
     {% endraw %}
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>And our results are great! After 10 epochs I'm getting a whopping 97% correct.</p>
-<p>Given we've implemented this all from scratch, backprop included, to get these results using only 4 notebook cells worth of code is a testament to how simple backprop really is!</p>
+<p>Our results are great! After 10 epochs I'm getting a whopping 97% correct.</p>
+<p>And we've implemented this all from scratch, backprop included, using only 4 notebook cells worth of code. Hopefully this reflects how simple the underlying implementation really is!</p>
 
 </div>
 </div>
