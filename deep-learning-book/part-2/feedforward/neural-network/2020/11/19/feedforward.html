@@ -94,7 +94,7 @@ window.onload = wrap_img;
        • <span class="read-time" title="Estimated read time">
     
     
-      13 min read
+      16 min read
     
 </span></p>
 
@@ -126,6 +126,18 @@ window.onload = wrap_img;
 <li class="toc-entry toc-h3"><a href="#sigmoid-units-for-bernoulli-output-distributions">Sigmoid Units for Bernoulli Output Distributions</a></li>
 <li class="toc-entry toc-h3"><a href="#softmax-units-for-multinoulli-output-distributions">Softmax Units for Multinoulli Output Distributions</a></li>
 <li class="toc-entry toc-h3"><a href="#numerically-stable-softmax">Numerically Stable Softmax</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#general-back-propagation">General Back-Propagation</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#general-approach">General Approach</a></li>
+<li class="toc-entry toc-h3"><a href="#preliminaries">Preliminaries</a>
+<ul>
+<li class="toc-entry toc-h4"><a href="#tensor-notation">Tensor Notation</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h3"><a href="#requirements">Requirements</a></li>
+<li class="toc-entry toc-h3"><a href="#algorithm">Algorithm</a></li>
 </ul>
 </li>
 </ul><p>Link to chapter: <a href="https://www.deeplearningbook.org/contents/mlp.html">6 Deep Feedforward Networks</a></p>
@@ -338,6 +350,78 @@ J(\theta) = -\sum_{j=1}^m \left[z_{y_j} - \log\sum_{k=1}^n e^{z_k} \right]\\</an
 
 <p>This means that our inputs to the function are simply the differences between each input and the largest input. Thus, if the scale of all the inputs becomes very large or negative, the computation will still be stable so long as the relative values are not extremely different across the inputs<sup id="fnref:4" role="doc-noteref"><a href="#fn:4" class="footnote">4</a></sup>.</p>
 
+<h2 id="general-back-propagation">
+<a class="anchor" href="#general-back-propagation" aria-hidden="true"><span class="octicon octicon-link"></span></a>General Back-Propagation</h2>
+
+<p>The purpose-crafted output layers and cost functions above are designed to reduce to simple derivatives with useful properties.</p>
+
+<p>In the general case though, neural architectures are not guaranteed to have nice mathematical expressions representing the derivatives. We require a method for calculating these automatically. This is the domain of the <strong>back-propagation</strong> algorithm.</p>
+
+<p>The premise of back-propagation is the use of the chain rule to calculate derivatives of parameters with respect to the cost function. Doing this in the naive way for each node in the network requires exponentially many computational steps. The insight for back-propagation is that this can be reduced substantially by computing and retaining the derivatives, computed front-to-back<sup id="fnref:5" role="doc-noteref"><a href="#fn:5" class="footnote">5</a></sup>.</p>
+
+<p>Below is the most general form of the back-propagation algorithm, which can be applied to any model comprising differentiable operations.</p>
+
+<h3 id="general-approach">
+<a class="anchor" href="#general-approach" aria-hidden="true"><span class="octicon octicon-link"></span></a>General Approach</h3>
+
+<p>Our objective here is to create a second computational graph that flows backwards to compute gradients.</p>
+
+<p>This enables us to do the forward and backward pass in exactly the same way. In the textbook it is suggested that these graphs are combined, although they could equally be managed separately.</p>
+
+<h3 id="preliminaries">
+<a class="anchor" href="#preliminaries" aria-hidden="true"><span class="octicon octicon-link"></span></a>Preliminaries</h3>
+
+<h4 id="tensor-notation">
+<a class="anchor" href="#tensor-notation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Tensor Notation</h4>
+
+<p>We assume a computation graph where each node represents an operation parameterised by a tensor $\mathsf{X}$.</p>
+
+<p>Tensors are typically indexed with a coordinate per rank, which can make notation challenging. To simplify this, we index using a single coordinate representing the tuple of original coordinates. This allows us to essentially treat the tensor (and its gradient) like a standard 2D matrix in our equations.</p>
+
+<p>Based on this, we can write the chain rule as it applies to tensors. Letting $\mathsf{Y} = g(\mathsf{X})$ and $z = f(\mathsf{Y})$:<sup id="fnref:6" role="doc-noteref"><a href="#fn:6" class="footnote">6</a></sup></p>
+
+<span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi mathvariant="normal">∇</mi><mi mathvariant="sans-serif">X</mi></msub><mi>z</mi><mo>=</mo><munder><mo>∑</mo><mi>j</mi></munder><mtext> </mtext><msub><mi mathvariant="normal">∇</mi><mi mathvariant="sans-serif">X</mi></msub><msub><mi mathvariant="sans-serif">Y</mi><mi>j</mi></msub><mtext>  </mtext><mfrac><mrow><mi>δ</mi><mi>z</mi></mrow><mrow><mi>δ</mi><msub><mi mathvariant="sans-serif">Y</mi><mi>j</mi></msub></mrow></mfrac></mrow><annotation encoding="application/x-tex">\nabla_{\mathsf{X}}z = \sum_j \: \nabla_{\mathsf{X}}\mathsf{Y}_j \; \frac{\delta z}{\delta \mathsf{Y}_j}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord">∇</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.33610799999999996em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathsf mtight">X</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord mathdefault" style="margin-right:0.04398em;">z</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:2.7852170000000003em;vertical-align:-1.413777em;"></span><span class="mop op-limits"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.050005em;"><span style="top:-1.8723309999999997em;margin-left:0em;"><span class="pstrut" style="height:3.05em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight" style="margin-right:0.05724em;">j</span></span></span><span style="top:-3.0500049999999996em;"><span class="pstrut" style="height:3.05em;"></span><span><span class="mop op-symbol large-op">∑</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.413777em;"><span></span></span></span></span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord"><span class="mord">∇</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.33610799999999996em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathsf mtight">X</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord"><span class="mord"><span class="mord mathsf" style="margin-right:0.025em;">Y</span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.311664em;"><span style="top:-2.5500000000000003em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight" style="margin-right:0.05724em;">j</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.37144em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.03785em;">δ</span><span class="mord"><span class="mord"><span class="mord mathsf" style="margin-right:0.025em;">Y</span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.311664em;"><span style="top:-2.5500000000000003em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight" style="margin-right:0.05724em;">j</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.03785em;">δ</span><span class="mord mathdefault" style="margin-right:0.04398em;">z</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.972108em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span>
+
+<h3 id="requirements">
+<a class="anchor" href="#requirements" aria-hidden="true"><span class="octicon octicon-link"></span></a>Requirements</h3>
+
+<ol>
+  <li>A computation graph $\mathcal{G}$ where nodes represent variables and edges their dependencies. The function $\mathtt{get children(\mathsf{V})}$ is assumed to exist.</li>
+  <li>A set of target variables $\mathbb{T}$ whose gradients must be computed.</li>
+  <li>The variable to be differentiated $z$.</li>
+  <li>A back-propagation operation for each variable $\mathsf{V}$:  $\; \mathtt{bprop(\mathsf{V}, \mathsf{W}, \mathsf{D})}$.</li>
+</ol>
+
+<p>For each fundamental operation used in $\mathcal{G}$, the framework/programmer must define a corresponding back-propagation operation, which should satisfy the following equation:</p>
+
+<span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="monospace">b</mi><mi mathvariant="monospace">p</mi><mi mathvariant="monospace">r</mi><mi mathvariant="monospace">o</mi><mi mathvariant="monospace">p</mi><mo stretchy="false">(</mo><mi mathvariant="sans-serif">V</mi><mo separator="true">,</mo><mi mathvariant="sans-serif">W</mi><mo separator="true">,</mo><mi mathvariant="sans-serif">D</mi><mo stretchy="false">)</mo></mrow><mo>=</mo><munder><mo>∑</mo><mi>j</mi></munder><mtext> </mtext><mo stretchy="false">(</mo><msub><mi mathvariant="normal">∇</mi><mi mathvariant="sans-serif">V</mi></msub><msub><mi mathvariant="sans-serif">W</mi><mi>j</mi></msub><mo stretchy="false">)</mo><mtext>  </mtext><msub><mi mathvariant="sans-serif">D</mi><mi>j</mi></msub></mrow><annotation encoding="application/x-tex">\mathtt{bprop(\mathsf{V}, \mathsf{W}, \mathsf{D})} = \sum_j \: (\nabla_{\mathsf{V}}\mathsf{W}_j) \; \mathsf{D}_j</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathtt">b</span><span class="mord mathtt">p</span><span class="mord mathtt">r</span><span class="mord mathtt">o</span><span class="mord mathtt">p</span><span class="mopen">(</span><span class="mord"><span class="mord mathsf" style="margin-right:0.01389em;">V</span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathsf" style="margin-right:0.01389em;">W</span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathsf">D</span></span><span class="mclose">)</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:2.463782em;vertical-align:-1.413777em;"></span><span class="mop op-limits"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.050005em;"><span style="top:-1.8723309999999997em;margin-left:0em;"><span class="pstrut" style="height:3.05em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight" style="margin-right:0.05724em;">j</span></span></span><span style="top:-3.0500049999999996em;"><span class="pstrut" style="height:3.05em;"></span><span><span class="mop op-symbol large-op">∑</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.413777em;"><span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mopen">(</span><span class="mord"><span class="mord">∇</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.33610799999999996em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathsf mtight" style="margin-right:0.01389em;">V</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord"><span class="mord"><span class="mord mathsf" style="margin-right:0.01389em;">W</span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.311664em;"><span style="top:-2.5500000000000003em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight" style="margin-right:0.05724em;">j</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mord"><span class="mord"><span class="mord mathsf">D</span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.311664em;"><span style="top:-2.5500000000000003em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight" style="margin-right:0.05724em;">j</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span></span></span></span></span>
+
+<p>where $\mathsf{D}$ is expected to represent $\frac{\delta z}{\delta \mathsf{W}}$. This is just a step of the chain rule we’re familiar with for a given operation.</p>
+
+<p>The final thing to note is the existence of a pre-processing step which prunes all nodes that are not on any path from $\mathbb{T}$ to $\mathcal{G}$. When adding the new backwards nodes we do this to the full graph, but for all other purposes we consider the pruned graph.</p>
+
+<h3 id="algorithm">
+<a class="anchor" href="#algorithm" aria-hidden="true"><span class="octicon octicon-link"></span></a>Algorithm</h3>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">general_back_propagation</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+    <span class="n">grad_table</span> <span class="o">=</span> <span class="p">{</span><span class="n">z</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>  <span class="o">//</span> <span class="n">mutable</span>
+    <span class="k">for</span> <span class="n">V</span> <span class="ow">in</span> <span class="n">T</span><span class="p">:</span>
+        <span class="n">build_grad</span><span class="p">(</span><span class="n">V</span><span class="p">,</span> <span class="n">grad_table</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span><span class="n">v</span><span class="p">:</span> <span class="n">g</span> <span class="k">for</span> <span class="n">v</span><span class="p">,</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">grad_table</span> <span class="k">if</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">V</span><span class="p">}</span>
+
+<span class="k">def</span> <span class="nf">build_grad</span><span class="p">(</span><span class="n">V</span><span class="p">,</span> <span class="n">grad_table</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">V</span> <span class="ow">in</span> <span class="n">grad_table</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">grad_table</span><span class="p">[</span><span class="n">V</span><span class="p">]</span>
+    <span class="n">grad_v</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">W</span> <span class="ow">in</span> <span class="n">get_children</span><span class="p">(</span><span class="n">V</span><span class="p">):</span>
+        <span class="n">D</span> <span class="o">=</span> <span class="n">build_grad</span><span class="p">(</span><span class="n">W</span><span class="p">,</span> <span class="n">grad_table</span><span class="p">)</span>
+        <span class="n">grad_v</span> <span class="o">+=</span> <span class="n">bprop</span><span class="p">(</span><span class="n">V</span><span class="p">,</span> <span class="n">W</span><span class="p">,</span> <span class="n">D</span><span class="p">)</span>
+    <span class="n">grad_table</span><span class="p">[</span><span class="n">V</span><span class="p">]</span> <span class="o">=</span> <span class="n">grad_v</span>
+    <span class="c1"># + function to insert grad_table[V] into graph, along with ops creating it
+</span>    <span class="k">return</span> <span class="n">grad_v</span>
+</code></pre></div></div>
+
+<p>For an example of this in practice, see my notebook outlining <a href="https://thecharlieblake.co.uk/neural-networks/backpropagation/2020/12/23/simple-backprop.html">how to implement back-propagation for a vanilla neural network</a>!</p>
 <div class="footnotes" role="doc-endnotes">
   <ol>
     <li id="fn:1" role="doc-endnote">
@@ -351,6 +435,12 @@ J(\theta) = -\sum_{j=1}^m \left[z_{y_j} - \log\sum_{k=1}^n e^{z_k} \right]\\</an
     </li>
     <li id="fn:4" role="doc-endnote">
       <p>I believe that the gradient of the softmax should discourage these relative values getting too large, but I’m not sure. If this is the case, then we are protected against numerical instability from all directions. <a href="#fnref:4" class="reversefootnote" role="doc-backlink">↩</a></p>
+    </li>
+    <li id="fn:5" role="doc-endnote">
+      <p>The chain rule can be computed from the left or right, the latter of which enables back-propagation. This is typically preferred as it build up gradients from front to back, which is quicker in the (standard) case where the number of neurons reduces as we proceed (with a single output neuron). I think there are some cases though in which it’s actually more efficient to go forward. <a href="#fnref:5" class="reversefootnote" role="doc-backlink">↩</a></p>
+    </li>
+    <li id="fn:6" role="doc-endnote">
+      <p>My instinct for this equation is to think that we can represent this as one inner product. But $\nabla_{\mathsf{X}}\mathsf{Y}_j$ is already a matrix, so unless we want to get into some fairly scary tensor notation (not necessary, potentially less useful!) it’s better to leave it like this. Recall as well that our standard assumption is that the derivative of the cost with respect to a parameter tensor has the same shape as that tensor. <a href="#fnref:6" class="reversefootnote" role="doc-backlink">↩</a></p>
     </li>
   </ol>
 </div>
